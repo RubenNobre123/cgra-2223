@@ -1,6 +1,8 @@
 /*global THREE, requestAnimationFrame, console*/
 
-var camera, scene, renderer;
+var scene, renderer;
+
+var frontalCamera, sideCamera, aboveCamera, isometricOrthogonalCamera, isometricPerspectiveCamera
 
 var geometry, material, mesh;
 
@@ -10,8 +12,8 @@ function onResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     if (window.innerHeight > 0 && window.innerWidth > 0) {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
+        frontalCamera.aspect = window.innerWidth / window.innerHeight;
+        frontalCamera.updateProjectionMatrix();
     }
 
 }
@@ -25,14 +27,18 @@ function onKeyDown(e) {
 
 function createCamera() {
     'use strict';
-    camera = new THREE.PerspectiveCamera(70,
-                                         window.innerWidth / window.innerHeight,
-                                         1,
-                                         1000);
-    camera.position.x = 50;
-    camera.position.y = 50;
-    camera.position.z = 50;
-    camera.lookAt(scene.position);
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    frontalCamera = new THREE.OrthographicCamera(
+        width / -2, // Left
+        width / 2,  // Right
+        height / 2, // Top
+        height / -2, // Bottom
+        1,          // Near
+        1000        // Far
+      );
+    frontalCamera.position.set(0, 0, 100)
+    frontalCamera.lookAt(scene.position);
 }
 
 function createScene() {
@@ -41,23 +47,23 @@ function createScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xeeeeee );
 
-    const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
-    const points = [];
-    points.push( new THREE.Vector3( - 10, 0, 0 ) );
-    points.push( new THREE.Vector3( 0, 10, 0 ) );
-    points.push( new THREE.Vector3( 10, 0, 0 ) );
+    scene.position.x = 0;
+    scene.position.y = 0;
+    scene.position.z = 0;
 
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    const line = new THREE.Line( geometry, material );
-    scene.add(line);
-
-    scene.add(new THREE.AxisHelper(10));
+    scene.add(new THREE.AxisHelper(100));
 
 }
 
 function render() {
     'use strict';
-    renderer.render(scene, camera);
+    renderer.render(scene, frontalCamera);
+}
+
+function animate() {
+    render();
+
+    requestAnimationFrame(animate);
 }
 
 function init() {
