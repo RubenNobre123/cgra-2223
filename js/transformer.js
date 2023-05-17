@@ -4,7 +4,9 @@ var scene, renderer;
 
 var frontalCamera, sideCamera, topCamera, isometricOrthogonalCamera, isometricPerspectiveCamera, activeCamera;
 
-var geometry, material, mesh;
+var geometry, material, mesh, robot;
+
+
 
 function onResize() {
     'use strict';
@@ -18,11 +20,12 @@ function onResize() {
 
 }
 
+
 function onKeyDown(e) {
     'use strict';
 
     switch (e.keyCode) {
-        case 49: 
+        case 49:
             activeCamera = frontalCamera;
             break;
         case 50:
@@ -40,38 +43,40 @@ function onKeyDown(e) {
     }
 }
 
+
 function createCamera() {
     'use strict';
     var width = window.innerWidth;
     var height = window.innerHeight;
 
     frontalCamera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
-    frontalCamera.position.set(0, 0, 100)
+    frontalCamera.position.set(0, 0, 200)
     frontalCamera.lookAt(scene.position);
 
     sideCamera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
-    sideCamera.position.set(100,0,0)
+    sideCamera.position.set(200, 0, 0)
     sideCamera.lookAt(scene.position);
 
     topCamera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
-    sideCamera.position.set(0,100,0)
-    sideCamera.lookAt(scene.position);
+    topCamera.position.set(0, 200, 0)
+    topCamera.lookAt(scene.position);
 
     isometricOrthogonalCamera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 1, 1000);
-    isometricOrthogonalCamera.position.set(50,50,50)
+    isometricOrthogonalCamera.position.set(100, 100, 100)
     isometricOrthogonalCamera.lookAt(scene.position);
 
     isometricPerspectiveCamera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
-    isometricPerspectiveCamera.position.set(50,50,50)
+    isometricPerspectiveCamera.position.set(100, 100, 100)
     isometricPerspectiveCamera.lookAt(scene.position);
 
-} 
+}
+
 
 function createScene() {
     'use strict';
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xeeeeee );
+    scene.background = new THREE.Color(0xeeeeee);
 
     scene.position.x = 0;
     scene.position.y = 0;
@@ -79,18 +84,23 @@ function createScene() {
 
     scene.add(new THREE.AxisHelper(100));
 
+    createRobot(0, 0, 0);
+
 }
+
 
 function render() {
     'use strict';
     renderer.render(scene, activeCamera);
 }
 
+
 function animate() {
     render();
 
     requestAnimationFrame(animate);
 }
+
 
 function init() {
     'use strict';
@@ -109,4 +119,62 @@ function init() {
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", onResize);
+}
+
+function createRobot(x, y, z) {
+    'use strict';
+
+    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+
+    var rightLeg = new THREE.Object3D();
+    var leftLeg = new THREE.Object3D();
+    var waist = new THREE.Object3D();
+
+    addRobotFoot(rightLeg, -25, -250, 0);
+    addRobotLeg(rightLeg, -25, -160, 0);
+    addRobotThigh(rightLeg, -25, -45, 10);
+    addRobotFoot(leftLeg, 25, -250, 0);
+    addRobotLeg(rightLeg, 25, -160, 0);
+    addRobotThigh(leftLeg, 25, -45, 10);
+    addRobotWaist(waist, 0, 0, 0);
+
+    waist.add(rightLeg);
+    waist.add(leftLeg);
+    scene.add(waist);
+}
+
+function addRobotFoot(leg, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.CubeGeometry(40, 10, 50);
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+    leg.add(mesh);
+}
+
+function addRobotLeg(leg, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.CubeGeometry(40, 170, 40);
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+    leg.add(mesh);    
+}
+
+function addRobotThigh(leg, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.CubeGeometry(20, 60, 20);
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+    leg.add(mesh);
+}
+
+function addRobotWaist(waist, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.CubeGeometry(100, 30, 60);
+    mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, y, z);
+    waist.add(mesh);
 }
