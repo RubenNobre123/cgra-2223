@@ -40,6 +40,13 @@ function onKeyDown(e) {
         case 53:
             activeCamera = isometricPerspectiveCamera;
             break;
+        case 54: 
+            scene.traverse(function (node) {
+                if (node instanceof THREE.Mesh) {
+                    node.material.wireframe = !node.material.wireframe;
+                }
+            });
+            break;
     }
 }
 
@@ -66,7 +73,7 @@ function createCamera() {
     isometricOrthogonalCamera.lookAt(scene.position);
 
     isometricPerspectiveCamera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
-    isometricPerspectiveCamera.position.set(100, 100, 100)
+    isometricPerspectiveCamera.position.set(200, 200, 200)
     isometricPerspectiveCamera.lookAt(scene.position);
 
 }
