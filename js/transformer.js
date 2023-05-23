@@ -140,6 +140,7 @@ function createScene() {
     scene.add(new THREE.AxisHelper(100));
 
     createRobot();
+    createTrailer(100,100,100);
 
 }
 
@@ -174,6 +175,62 @@ function init() {
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", onResize);
+}
+
+function createTrailer(x, y, z) {
+    'use strict';
+
+    var trailerBack = new THREE.Object3D();
+    var trailerFront = new THREE.Object3D();
+    var trailerBody = new THREE.Object3D();
+    var trailerWheel1 = new THREE.Object3D();
+    var trailerWheel2 = new THREE.Object3D();
+    var trailerWheel3 = new THREE.Object3D();
+    var trailerWheel4 = new THREE.Object3D();
+
+    addTrailerBack(trailerBack, -200, -200, 0);
+    addTrailerFront(trailerFront, -200, -185, 125);
+    addTrailerWheel(trailerWheel1, -170, -240, -40);
+    addTrailerWheel(trailerWheel2, -170, -240, 10);
+    addTrailerWheel(trailerWheel3, -230, -240, -40);
+    addTrailerWheel(trailerWheel3, -230, -240, 10);
+
+
+    trailerBody.add(trailerBack);
+    trailerBody.add(trailerFront);
+    trailerBody.add(trailerWheel1);
+    trailerBody.add(trailerWheel2);
+    trailerBody.add(trailerWheel3);
+    trailerBody.add(trailerWheel4);
+    scene.add(trailerBody);
+}
+
+function addTrailerBack(trailer, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.CubeGeometry(50, 80, 100);
+    mesh = new THREE.Mesh(geometry, baseMaterialBlue);
+    mesh.position.set(x, y, z);
+    trailer.add(mesh);
+}
+
+function addTrailerFront(trailer, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.CubeGeometry(50, 50, 150);
+    mesh = new THREE.Mesh(geometry, baseMaterialBlue);
+    mesh.position.set(x, y, z);
+    trailer.add(mesh);
+}
+
+function addTrailerWheel(trailer, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.CylinderGeometry(20, 20, 10);
+    mesh = new THREE.Mesh(geometry, baseMaterialBlue);
+    mesh.position.set(x, y, z);
+    mesh.rotation.z += Math.PI/2;
+    trailer.add(mesh);
 }
 
 function createRobot() {
