@@ -94,6 +94,7 @@ function onKeyDown(e) {
         break;
         case 102: // f
         case 70: // F
+        head.rotation.x -= 0.04;
         break;
     }
 }
@@ -242,6 +243,7 @@ function createRobot() {
     rightArm = new THREE.Object3D();
     leftArm = new THREE.Object3D();
     head = new THREE.Object3D();
+    head.position.set(0,85,-30);
     leftFoot = new THREE.Object3D();
     rightFoot = new THREE.Object3D();
 
@@ -272,11 +274,11 @@ function createRobot() {
     addForearm(leftArm, -60, 25, -20);
     addExaustingPipe(leftArm, 75, 80, -50);
     
-    addHead(head, 0, 100, 0); 
-    addAntenna(head, 17.5, 115, 0);
-    addAntenna(head, -17.5, 115, 0);
-    addEye(head, 8, 100, 15);
-    addEye(head, -8, 100, 15);
+    addHead(0, 15, 15); 
+    addAntenna(17.5, 30, 15);
+    addAntenna(-17.5, 30, 15);
+    addEye(8, 15, 30);
+    addEye(-8, 15, 30);
 
     waist.add(rightLeg);
     waist.add(leftLeg);
@@ -370,7 +372,7 @@ function addWheel(obj, x, y, z){
     obj.add(mesh);
 }
 
-function addHead(head, x, y, z){
+function addHead(x, y, z){
     'use strict';
     
     geometry = new THREE.CubeGeometry(30,30,30);
@@ -379,7 +381,7 @@ function addHead(head, x, y, z){
     head.add(mesh);
 }
 
-function addAntenna(head, x, y, z){
+function addAntenna(x, y, z){
     'use strict';
 
     geometry = new THREE.CubeGeometry(5,20,5);
@@ -388,7 +390,7 @@ function addAntenna(head, x, y, z){
     head.add(mesh);
 }
 
-function addEye(head, x, y, z){
+function addEye(x, y, z){
     'use strict';
 
     geometry = new THREE.CylinderGeometry(5,5,5);
