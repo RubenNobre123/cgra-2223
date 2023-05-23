@@ -18,7 +18,7 @@ var baseMaterialBlue = new THREE.MeshBasicMaterial(robotBlue);
 var baseMaterialGrey = new THREE.MeshBasicMaterial(robotGrey);
 var baseMaterialRed = new THREE.MeshBasicMaterial(robotRed);
 
-var rightLeg, leftLeg, waist, rightArm, leftArm, head
+var rightLeg, leftLeg, waist, rightArm, leftArm, head, leftFoot, rightFoot
 
 /**
  * Stores all materials in the scene. Useful for toggling wireframe.
@@ -242,14 +242,16 @@ function createRobot() {
     rightArm = new THREE.Object3D();
     leftArm = new THREE.Object3D();
     head = new THREE.Object3D();
+    leftFoot = new THREE.Object3D();
+    rightFoot = new THREE.Object3D();
 
-    addRobotFoot(rightLeg, -25, -250, 0);
+    addRobotFoot(rightLeg, rightFoot, -25, -250, 0);
     addRobotLeg(rightLeg, -25, -160, 0);
     addRobotThigh(rightLeg, -25, -45, 10);
     addWheel(rightLeg, -50, -135, 0);
     addWheel(rightLeg, -50, -185, 0);
 
-    addRobotFoot(leftLeg, 25, -250, 0);
+    addRobotFoot(leftLeg, leftFoot, 25, -250, 0);
     addRobotLeg(rightLeg, 25, -160, 0);
     addRobotThigh(leftLeg, 25, -45, 10);
     addWheel(leftLeg, 50, -135, 0);
@@ -264,7 +266,7 @@ function createRobot() {
 
     addArm(rightArm, 60, 60, -50);
     addForearm(rightArm, 60, 25, -20);
-    addExaustingPipe(rightArm, -75, 80, 50);
+    addExaustingPipe(rightArm, -75, 80, -50);
 
     addArm(leftArm, -60, 60, -50);
     addForearm(leftArm, -60, 25, -20);
@@ -285,12 +287,13 @@ function createRobot() {
     scene.add(head);
 }
 
-function addRobotFoot(leg, x, y, z) {
+function addRobotFoot(leg, foot, x, y, z) {
     'use strict';
 
     geometry = new THREE.CubeGeometry(40, 10, 50);
     mesh = new THREE.Mesh(geometry, baseMaterialRed);
     mesh.position.set(x, y, z);
+    foot.add(mesh);
     leg.add(mesh);
 }
 
