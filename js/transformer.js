@@ -20,6 +20,8 @@ var baseMaterialRed = new THREE.MeshBasicMaterial(robotRed);
 
 var rightLeg, leftLeg, waist, rightArm, leftArm, head, leftFoot, rightFoot
 
+const ANGLE_DELTA = Math.PI/60
+
 /**
  * Stores all materials in the scene. Useful for toggling wireframe.
  * According to teacher sources, an even number of objects in the
@@ -74,11 +76,11 @@ function onKeyDown(e) {
         break;
         case 115: // s
         case 83: // S
-            waist.rotation.x -= 0.04;
+            waist.rotation.x -= Math.PI/90;
         break;
         case 119: // w
         case 87: // W
-            waist.rotation.x += 0.04;
+            waist.rotation.x += Math.PI/90;
         break;
         case 101: // e
         case 69: // E
@@ -86,7 +88,7 @@ function onKeyDown(e) {
         break;
         case 114: // r
         case 82: // R
-            head.rotation.x += 0.04;
+            head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_DELTA, -Math.PI/2, 0)
         break;
         case 100: // d
         case 68: // D
@@ -94,7 +96,7 @@ function onKeyDown(e) {
         break;
         case 102: // f
         case 70: // F
-        head.rotation.x -= 0.04;
+            head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_DELTA, -Math.PI/2, 0)
         break;
     }
 }
