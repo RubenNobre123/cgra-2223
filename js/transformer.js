@@ -76,15 +76,15 @@ function onKeyDown(e) {
         break;
         case 115: // s
         case 83: // S
-            legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_DELTA, -Math.PI/2, 0)
+            legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_DELTA, 0, Math.PI/2)
         break;
         case 119: // w
         case 87: // W
-            legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_DELTA, Math.PI/2, 0)
+            legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_DELTA, 0, Math.PI/2)
         break;
         case 101: // e errado
         case 69: // E
-            trailerBody.translateX(-10)
+
         break;
         case 114: // r
         case 82: // R
@@ -92,11 +92,17 @@ function onKeyDown(e) {
         break;
         case 100: // d errado
         case 68: // D
-            trailerBody.translateX(10)
+
         break;
         case 102: // f
         case 70: // F
             head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_DELTA, -Math.PI/2, 0)
+        break;
+        case 37:
+            trailerBody.translateX(-10)
+        break;
+        case 39:
+            trailerBody.translateX(10)
         break;
     }
 }
