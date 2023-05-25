@@ -82,7 +82,7 @@ function onKeyDown(e) {
         case 87: // W
             legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_DELTA, 0, Math.PI/2)
         break;
-        case 101: // e errado
+        case 101: // e 
         case 69: // E
 
         break;
@@ -90,7 +90,7 @@ function onKeyDown(e) {
         case 82: // R
             head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_DELTA, -Math.PI/2, 0)
         break;
-        case 100: // d errado
+        case 100: // d 
         case 68: // D
 
         break;
@@ -193,12 +193,12 @@ function createTrailer(x, y, z) {
     trailerFront = new THREE.Object3D();
     trailerBody = new THREE.Object3D();
 
-    addTrailerBack(trailerBack, -200, 25, -320);
-    addTrailerFront(trailerFront, -200, 45, -160);
-    addTrailerWheel(trailerBack, -145, -15, -365);
-    addTrailerWheel(trailerFront, -145, -15, -310);
-    addTrailerWheel(trailerBack, -255, -15, -365);
-    addTrailerWheel(trailerFront, -255, -15, -310);
+    addTrailerBack(trailerBack, -200, 60, -355);
+    addTrailerFront(trailerFront, -200, 80, -170);
+    addTrailerWheel(trailerBack, -145, -15, -405);
+    addTrailerWheel(trailerFront, -145, -15, -350);
+    addTrailerWheel(trailerBack, -255, -15, -405);
+    addTrailerWheel(trailerFront, -255, -15, -350);
 
     trailerBody.add(trailerBack);
     trailerBody.add(trailerFront);
@@ -208,7 +208,7 @@ function createTrailer(x, y, z) {
 function addTrailerBack(trailer, x, y, z) {
     'use strict';
 
-    geometry = new THREE.CubeGeometry(100, 80, 150);
+    geometry = new THREE.CubeGeometry(100, 150, 200);
     mesh = new THREE.Mesh(geometry, baseMaterialBlue);
     mesh.position.set(x, y, z);
     trailer.add(mesh);
@@ -217,7 +217,7 @@ function addTrailerBack(trailer, x, y, z) {
 function addTrailerFront(trailer, x, y, z) {
     'use strict';
 
-    geometry = new THREE.CubeGeometry(100, 40, 170);
+    geometry = new THREE.CubeGeometry(100, 110, 170);
     mesh = new THREE.Mesh(geometry, baseMaterialBlue);
     mesh.position.set(x, y, z);
     trailer.add(mesh);
@@ -249,17 +249,17 @@ function createRobot() {
     leftFoot = new THREE.Object3D();
     rightFoot = new THREE.Object3D();
 
-    addRobotFoot(rightLeg, rightFoot, -25, -250, 5);
-    addRobotLeg(rightLeg, -25, -160, 0);
-    addRobotThigh(rightLeg, -25, -47, 0);
-    addWheel(rightLeg, -50, -110, 20);
-    addWheel(rightLeg, -50, -165, 20);
+    addRobotFoot(rightLeg, rightFoot, -25, -260, 5);
+    addRobotLeg(rightLeg, -25, -170, 0);
+    addRobotThigh(rightLeg, -25, -52, 0);
+    addWheel(rightLeg, -50, -120, 20);
+    addWheel(rightLeg, -50, -175, 20);
 
-    addRobotFoot(leftLeg, leftFoot, 25, -250, 5);
-    addRobotLeg(rightLeg, 25, -160, 0);
-    addRobotThigh(leftLeg, 25, -47, 0);
-    addWheel(leftLeg, 50, -110, 20);
-    addWheel(leftLeg, 50, -165, 20);
+    addRobotFoot(leftLeg, leftFoot, 25, -260, 5);
+    addRobotLeg(rightLeg, 25, -170, 0);
+    addRobotThigh(leftLeg, 25, -52, 0);
+    addWheel(leftLeg, 50, -120, 20);
+    addWheel(leftLeg, 50, -175, 20);
 
     addRobotWaist(waist, 0, 0, 0);
     addWheel(waist, 55, -15, 0);
@@ -318,7 +318,7 @@ function addRobotLeg(leg, x, y, z) {
 function addRobotThigh(leg, x, y, z) {
     'use strict';
 
-    geometry = new THREE.CubeGeometry(20, 55, 20);
+    geometry = new THREE.CubeGeometry(20, 65, 20);
     mesh = new THREE.Mesh(geometry, baseMaterialBlue);
     mesh.position.set(x, y, z);
     leg.add(mesh);
