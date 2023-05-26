@@ -36,6 +36,15 @@ var rotateFeetUp = false;
 var rotateHeadUp = false;
 var rotateHeadDown = false;
 
+const maxRotationLegs = Math.PI/2;
+const minRotationLegs = 0;
+const maxRotationHead = Math.PI/2;
+const minRotationHead = 0;
+const minRightArmPosition = -20;
+const maxRightArmPosition = 0;
+const minLeftArmPosition = 0;
+const maxLeftArmPosition = 20;
+
 var changeWireframe = false;
 var wireframeHasChangedRecently = false;
 
@@ -391,13 +400,13 @@ function update(){
     if(rotateFeetDown)
         feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED , 0, Math.PI/2)
     if(rotateLegsUp)
-        legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_SPEED, 0, Math.PI/2)
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_SPEED, minRotationLegs, maxRotationLegs)
     if(rotateLegsDown)
-        legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_SPEED, 0, Math.PI/2)
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_SPEED, minRotationLegs, maxRotationLegs)
     if(rotateHeadUp)
-        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_SPEED, 0, Math.PI/2)
+        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_SPEED, minRotationHead, maxRotationHead)
     if(rotateHeadDown)
-        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED, 0, Math.PI/2)
+        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED, minRotationHead, maxRotationHead)
     if (moveTrailerLeft) {
         trailerBody.translateX(-TRAILER_SPEED)
         trailerCollisionMin.x -= TRAILER_SPEED
@@ -419,12 +428,12 @@ function update(){
         trailerCollisionMax.z += TRAILER_SPEED
     }
     if (moveArmsIn) {
-        rightArm.position.x = THREE.Math.clamp(rightArm.position.x - ARMS_SPEED , -20, 0)
-        leftArm.position.x = THREE.Math.clamp(leftArm.position.x + ARMS_SPEED , 0, 20)
+        rightArm.position.x = THREE.Math.clamp(rightArm.position.x - ARMS_SPEED , minRightArmPosition, maxRightArmPosition)
+        leftArm.position.x = THREE.Math.clamp(leftArm.position.x + ARMS_SPEED , minLeftArmPosition, maxLeftArmPosition)
     }
     if (moveArmsOut) {
-        rightArm.position.x = THREE.Math.clamp(rightArm.position.x + ARMS_SPEED , -20, 0)
-        leftArm.position.x = THREE.Math.clamp(leftArm.position.x - ARMS_SPEED , 0, 20)
+        rightArm.position.x = THREE.Math.clamp(rightArm.position.x + ARMS_SPEED , minRightArmPosition, maxRightArmPosition)
+        leftArm.position.x = THREE.Math.clamp(leftArm.position.x - ARMS_SPEED , minLeftArmPosition, maxLeftArmPosition)
     }
     if (changeWireframe && !wireframeHasChangedRecently) {
         allMaterials.forEach(material => material.wireframe = !material.wireframe)
