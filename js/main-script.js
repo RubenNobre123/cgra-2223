@@ -29,7 +29,9 @@ var moveTrailerRight = false;
 var moveTrailerDown = false;
 var moveArmsIn = false;
 var moveArmsOut = false;
-var rotateLegsUp = false;
+
+
+var rotateFeetUp = false;
 var rotateFeetDown = false;
 var rotateLegsUp = false;
 var rotateLegsDown = false;
@@ -359,6 +361,25 @@ function handleCollisions(){
 function update(){
     'use strict';
 
+    if(rotateFeetUp){
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_DELTA * delta, 0, Math.PI/2)
+    }
+    if(rotateFeetDown){
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_DELTA  * delta, 0, Math.PI/2)
+    }
+    if(rotateLegsUp){
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_DELTA * delta, 0, Math.PI/2)
+    }
+    if(rotateLegsDown){
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_DELTA  * delta, 0, Math.PI/2)
+    }
+    if(rotateHeadUp){
+        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_DELTA * delta, 0, Math.PI/2)
+    } 
+    if(rotateHeadDown){
+        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_DELTA * delta, 0, Math.PI/2)
+    }
+
 }
 
 /////////////
@@ -398,6 +419,8 @@ function animate() {
     render();
 
     delta = clock.getDelta();
+
+    update();
 
     requestAnimationFrame(animate);
 }
