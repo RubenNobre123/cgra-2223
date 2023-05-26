@@ -20,6 +20,9 @@ var baseMaterialRed = new THREE.MeshBasicMaterial(robotRed);
 
 var rightLeg, leftLeg, waist, legs, feet, rightArm, leftArm, head, leftFoot, rightFoot, trailerBody, trailerFront, trailerBack, addTrailerWheel
 
+var clock = new THREE.Clock();
+var delta;
+
 const ANGLE_DELTA = Math.PI/60
 
 /**
@@ -68,11 +71,11 @@ function onKeyDown(e) {
             break;
         case 113: // q
         case 81: // Q
-            feet.rotation.x = THREE.Math.clamp(feet.rotation.x + ANGLE_DELTA, -Math.PI/2, 0)
+            feet.rotation.x -= 1// THREE.Math.clamp(feet.rotation.x + ANGLE_DELTA, -Math.PI/2, 0)
         break;
         case 97: // a
         case 65: // A
-            feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_DELTA, -Math.PI/2, 0)
+            feet.rotation.x += 1// THREE.Math.clamp(feet.rotation.x - ANGLE_DELTA, -Math.PI/2, 0)
         break;
         case 115: // s
         case 83: // S
@@ -171,6 +174,8 @@ function render() {
 function animate() {
     render();
 
+    delta = clock.getDelta();
+
     requestAnimationFrame(animate);
 }
 
@@ -254,6 +259,7 @@ function createRobot() {
     legs = new THREE.Object3D();
     legs.position.set(0,5,0);
     feet = new THREE.Object3D();
+    feet.position.set(0, -260, 0);
     leftFoot = new THREE.Object3D();
     rightFoot = new THREE.Object3D();
 
