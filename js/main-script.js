@@ -22,7 +22,6 @@ var baseMaterialRed = new THREE.MeshBasicMaterial(robotRed);
 
 var rightLeg, leftLeg, waist, legs, feet, rightArm, leftArm, head, leftFoot, rightFoot, trailerBody, trailerFront, trailerBack, addTrailerWheel
 
-var rotateHeadDown = false;
 var moveTrailerLeft = false;
 var moveTrailerUp = false;
 var moveTrailerRight = false;
@@ -30,18 +29,18 @@ var moveTrailerDown = false;
 var moveArmsIn = false;
 var moveArmsOut = false;
 
-
-var rotateFeetUp = false;
-var rotateFeetDown = false;
 var rotateLegsUp = false;
 var rotateLegsDown = false;
+var rotateFeetDown = false;
+var rotateFeetUp = false;
 var rotateHeadUp = false;
 var rotateHeadDown = false;
 
 var clock = new THREE.Clock();
 var delta;
 
-const ANGLE_DELTA = Math.PI/60
+const ANGLE_SPEED = Math.PI
+const ARMS_SPEED = 50
 
 /**
  * Stores all materials in the scene. Useful for toggling wireframe.
@@ -361,25 +360,34 @@ function handleCollisions(){
 function update(){
     'use strict';
 
-    if(rotateFeetUp){
-        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_DELTA * delta, 0, Math.PI/2)
+    if(rotateFeetUp)
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED * delta, 0, Math.PI/2)
+    if(rotateFeetDown)
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED  * delta, 0, Math.PI/2)
+    if(rotateLegsUp)
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_SPEED * delta, 0, Math.PI/2)
+    if(rotateLegsDown)
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_SPEED  * delta, 0, Math.PI/2)
+    if(rotateHeadUp)
+        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED * delta, 0, Math.PI/2)
+    if(rotateHeadDown)
+        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_SPEED * delta, 0, Math.PI/2)
+    if (moveTrailerLeft)
+        trailerBody.translateX(-TRAILER_SPEED*delta)
+    if (moveTrailerUp)
+        trailerBody.translateZ(TRAILER_SPEED*delta)
+    if (moveTrailerRight)     
+        trailerBody.translateX(TRAILER_SPEED*delta)
+    if (moveTrailerDown)
+        trailerBody.translateZ(-TRAILER_SPEED*delta)
+    if (moveArmsIn) {
+        rightArm.translateX(ARMS_SPEED*delta) 
+        leftArm.translateX(-ARMS_SPEED*delta) 
     }
-    if(rotateFeetDown){
-        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_DELTA  * delta, 0, Math.PI/2)
+    if (moveArmsOut) {
+        rightArm.translateX(-ARMS_SPEED*delta) 
+        leftArm.translateX(ARMS_SPEED*delta) 
     }
-    if(rotateLegsUp){
-        legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_DELTA * delta, 0, Math.PI/2)
-    }
-    if(rotateLegsDown){
-        legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_DELTA  * delta, 0, Math.PI/2)
-    }
-    if(rotateHeadUp){
-        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_DELTA * delta, 0, Math.PI/2)
-    } 
-    if(rotateHeadDown){
-        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_DELTA * delta, 0, Math.PI/2)
-    }
-
 }
 
 /////////////
@@ -409,6 +417,7 @@ function init() {
     render();
 
     window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
 }
 
@@ -470,11 +479,11 @@ function onKeyDown(e) {
         break;
         case 115: // s
         case 83: // S
-            rotateLegsUp = true;
+            rotateLegsDown = true;
         break;
         case 119: // w
         case 87: // W
-            rotateLegsDown = true;
+            rotateLegsUp = true;
         break;
         case 101: // e 
         case 69: // E
