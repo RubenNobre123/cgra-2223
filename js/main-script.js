@@ -168,8 +168,8 @@ function createRobot() {
     legs = new THREE.Object3D();
     legs.position.set(0,5,0);
     feet = new THREE.Object3D();
-    feet.position.set(0, -255, 0);
     leftFoot = new THREE.Object3D();
+    feet.position.set(0, -255, 0);
     rightFoot = new THREE.Object3D();
 
     addRobotFoot(rightLeg, rightFoot, -25, -260, 5);
@@ -179,7 +179,7 @@ function createRobot() {
     addWheel(rightLeg, -50, -175, 20);
 
     addRobotFoot(leftLeg, leftFoot, 25, -260, 5);
-    addRobotLeg(rightLeg, 25, -170, 0);
+    addRobotLeg(leftLeg, 25, -170, 0);
     addRobotThigh(leftLeg, 25, -52, 0);
     addWheel(leftLeg, 50, -120, 20);
     addWheel(leftLeg, 50, -175, 20);
@@ -216,7 +216,7 @@ function createRobot() {
     scene.add(leftArm);
     scene.add(head);
     scene.add(legs);
-    scene.add(feet);
+    //scene.add(feet);
 }
 
 function addRobotFoot(leg, foot, x, y, z) {
@@ -362,7 +362,7 @@ function update(){
     'use strict';
 
     if(rotateFeetUp)
-        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED * delta, 0, Math.PI/2)
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x + ANGLE_SPEED * delta, 0, Math.PI/2)
     if(rotateFeetDown)
         feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED  * delta, 0, Math.PI/2)
     if(rotateLegsUp)
@@ -370,9 +370,9 @@ function update(){
     if(rotateLegsDown)
         legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_SPEED  * delta, 0, Math.PI/2)
     if(rotateHeadUp)
-        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED * delta, 0, Math.PI/2)
-    if(rotateHeadDown)
         head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_SPEED * delta, 0, Math.PI/2)
+    if(rotateHeadDown)
+        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED * delta, 0, Math.PI/2)
     if (moveTrailerLeft)
         trailerBody.translateX(-TRAILER_SPEED*delta)
     if (moveTrailerUp)
@@ -382,12 +382,12 @@ function update(){
     if (moveTrailerDown)
         trailerBody.translateZ(-TRAILER_SPEED*delta)
     if (moveArmsIn) {
-        rightArm.translateX(ARMS_SPEED*delta) 
-        leftArm.translateX(-ARMS_SPEED*delta) 
+        rightArm.position.x = THREE.Math.clamp(rightArm.position.x - ARMS_SPEED * delta, -20, 0)
+        leftArm.position.x = THREE.Math.clamp(leftArm.position.x + ARMS_SPEED * delta, 0, 20)
     }
     if (moveArmsOut) {
-        rightArm.translateX(-ARMS_SPEED*delta) 
-        leftArm.translateX(ARMS_SPEED*delta) 
+        rightArm.position.x = THREE.Math.clamp(rightArm.position.x + ARMS_SPEED * delta, -20, 0)
+        leftArm.position.x = THREE.Math.clamp(leftArm.position.x - ARMS_SPEED * delta, 0, 20)
     }
 }
 
