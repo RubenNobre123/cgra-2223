@@ -376,11 +376,11 @@ function update(){
     if (moveTrailerLeft)
         trailerBody.translateX(-TRAILER_SPEED*delta)
     if (moveTrailerUp)
-        trailerBody.translateZ(TRAILER_SPEED*delta)
+        trailerBody.translateZ(-TRAILER_SPEED*delta)
     if (moveTrailerRight)     
         trailerBody.translateX(TRAILER_SPEED*delta)
     if (moveTrailerDown)
-        trailerBody.translateZ(-TRAILER_SPEED*delta)
+        trailerBody.translateZ(TRAILER_SPEED*delta)
     if (moveArmsIn) {
         rightArm.position.x = THREE.Math.clamp(rightArm.position.x - ARMS_SPEED * delta, -20, 0)
         leftArm.position.x = THREE.Math.clamp(leftArm.position.x + ARMS_SPEED * delta, 0, 20)
