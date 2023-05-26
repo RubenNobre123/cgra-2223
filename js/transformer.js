@@ -84,7 +84,8 @@ function onKeyDown(e) {
         break;
         case 101: // e 
         case 69: // E
-
+            rightArm.translateX(-1) 
+            leftArm.translateX(1) 
         break;
         case 114: // r
         case 82: // R
@@ -92,7 +93,8 @@ function onKeyDown(e) {
         break;
         case 100: // d 
         case 68: // D
-
+            rightArm.translateX(1) 
+            leftArm.translateX(-1) 
         break;
         case 102: // f
         case 70: // F
@@ -276,11 +278,11 @@ function createRobot() {
 
     addArm(rightArm, 60, 60, -50);
     addForearm(rightArm, 60, 25, -20);
-    addExaustingPipe(rightArm, -75, 80, -50);
+    addExaustingPipe(rightArm, 75, 80, -50);
 
     addArm(leftArm, -60, 60, -50);
     addForearm(leftArm, -60, 25, -20);
-    addExaustingPipe(leftArm, 75, 80, -50);
+    addExaustingPipe(leftArm, -75, 80, -50);
     
     addHead(0, 15, 15); 
     addAntenna(17.5, 30, 15);
