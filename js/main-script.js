@@ -156,6 +156,7 @@ function createTrailer() {
     addTrailerWheel(trailerFront, -145, -15, -350);
     addTrailerWheel(trailerBack, -255, -15, -405);
     addTrailerWheel(trailerFront, -255, -15, -350);
+    addTrailerConnection(trailerFront, -200, 15, -120 )
 
     trailerBody.add(trailerBack);
     trailerBody.add(trailerFront);
@@ -187,6 +188,15 @@ function addTrailerWheel(trailer, x, y, z) {
     mesh = new THREE.Mesh(geometry, baseMaterialGrey);
     mesh.position.set(x, y, z);
     mesh.rotation.z += Math.PI/2;
+    trailer.add(mesh);
+}
+
+function addTrailerConnection(trailer, x, y, z) {
+    'use strict';
+
+    geometry = new THREE.BoxGeometry(10, 20, 10);
+    mesh = new THREE.Mesh(geometry, baseMaterialBlue);
+    mesh.position.set(x, y, z);
     trailer.add(mesh);
 }
 
