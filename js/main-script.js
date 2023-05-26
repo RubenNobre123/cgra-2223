@@ -36,12 +36,29 @@ var rotateFeetUp = false;
 var rotateHeadUp = false;
 var rotateHeadDown = false;
 
-var clock = new THREE.Clock();
+var changeWireframe = false;
+var wireframeHasChangedRecently = false;
+
+var truck_mode = false;
+
+var trailerCollisionMin = new THREE.Vector3(-260, -40, -465)
+var trailerCollisionMax = new THREE.Vector3(-140, 150, -70)
+
+var movableWireframe = new THREE.Box3Helper(new THREE.Box3(trailerCollisionMin, trailerCollisionMax), 0x00FF00);
+movableWireframe.visible = true;
+
+const truckCollisionMin = new THREE.Vector3(-80, -40, -280)
+const truckCollisionMax = new THREE.Vector3(80, 130, 40)
+
+var immovableWireframe = new THREE.Box3Helper(new THREE.Box3(truckCollisionMin, truckCollisionMax), 0xFF0000);
+immovableWireframe.visible = true;
+
+const clock = new THREE.Clock();
 var delta;
 
-const ANGLE_SPEED = Math.PI
-const ARMS_SPEED = 50
-const TRAILER_SPEED = 100
+var ANGLE_SPEED
+var ARMS_SPEED
+var TRAILER_SPEED
 
 /**
  * Stores all materials in the scene. Useful for toggling wireframe.
@@ -64,6 +81,8 @@ function createScene() {
     scene.position.z = 0;
 
     scene.add(new THREE.AxisHelper(100));
+    scene.add(movableWireframe);
+    scene.add(immovableWireframe);
 
     createRobot();
     createTrailer(100,100,100);
@@ -344,7 +363,9 @@ function addExaustingPipe(arm, x, y, z){
 //////////////////////
 function checkCollisions(){
     'use strict';
-
+    if (truckCollisionMax.x > trailerCollisionMin.x && truckCollisionMin.x < trailerCollisionMax.x && truckCollisionMax.z > trailerCollisionMin.z && truckCollisionMin.z < trailerCollisionMax.z) {
+        handleCollisions()
+    }
 }
 
 ///////////////////////
@@ -352,7 +373,9 @@ function checkCollisions(){
 ///////////////////////
 function handleCollisions(){
     'use strict';
-
+    if(truck_mode){
+        animation = true;
+    }
 }
 
 ////////////
@@ -361,34 +384,54 @@ function handleCollisions(){
 function update(){
     'use strict';
 
+    
+
     if(rotateFeetUp)
-        feet.rotation.x = THREE.Math.clamp(feet.rotation.x + ANGLE_SPEED * delta, 0, Math.PI/2)
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x + ANGLE_SPEED, 0, Math.PI/2)
     if(rotateFeetDown)
-        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED  * delta, 0, Math.PI/2)
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED , 0, Math.PI/2)
     if(rotateLegsUp)
-        legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_SPEED * delta, 0, Math.PI/2)
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_SPEED, 0, Math.PI/2)
     if(rotateLegsDown)
-        legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_SPEED  * delta, 0, Math.PI/2)
+        legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_SPEED, 0, Math.PI/2)
     if(rotateHeadUp)
-        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_SPEED * delta, 0, Math.PI/2)
+        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_SPEED, 0, Math.PI/2)
     if(rotateHeadDown)
-        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED * delta, 0, Math.PI/2)
-    if (moveTrailerLeft)
-        trailerBody.translateX(-TRAILER_SPEED*delta)
-    if (moveTrailerUp)
-        trailerBody.translateZ(-TRAILER_SPEED*delta)
-    if (moveTrailerRight)     
-        trailerBody.translateX(TRAILER_SPEED*delta)
-    if (moveTrailerDown)
-        trailerBody.translateZ(TRAILER_SPEED*delta)
+        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED, 0, Math.PI/2)
+    if (moveTrailerLeft) {
+        trailerBody.translateX(-TRAILER_SPEED)
+        trailerCollisionMin.x -= TRAILER_SPEED
+        trailerCollisionMax.x -= TRAILER_SPEED
+    }
+    if (moveTrailerUp) {
+        trailerBody.translateZ(-TRAILER_SPEED)
+        trailerCollisionMin.z -= TRAILER_SPEED
+        trailerCollisionMax.z -= TRAILER_SPEED
+    }
+    if (moveTrailerRight) {
+        trailerBody.translateX(TRAILER_SPEED)
+        trailerCollisionMin.x += TRAILER_SPEED
+        trailerCollisionMax.x += TRAILER_SPEED
+    }
+    if (moveTrailerDown) {
+        trailerBody.translateZ(TRAILER_SPEED)
+        trailerCollisionMin.z += TRAILER_SPEED
+        trailerCollisionMax.z += TRAILER_SPEED
+    }
     if (moveArmsIn) {
-        rightArm.position.x = THREE.Math.clamp(rightArm.position.x - ARMS_SPEED * delta, -20, 0)
-        leftArm.position.x = THREE.Math.clamp(leftArm.position.x + ARMS_SPEED * delta, 0, 20)
+        rightArm.position.x = THREE.Math.clamp(rightArm.position.x - ARMS_SPEED , -20, 0)
+        leftArm.position.x = THREE.Math.clamp(leftArm.position.x + ARMS_SPEED , 0, 20)
     }
     if (moveArmsOut) {
-        rightArm.position.x = THREE.Math.clamp(rightArm.position.x + ARMS_SPEED * delta, -20, 0)
-        leftArm.position.x = THREE.Math.clamp(leftArm.position.x - ARMS_SPEED * delta, 0, 20)
+        rightArm.position.x = THREE.Math.clamp(rightArm.position.x + ARMS_SPEED , -20, 0)
+        leftArm.position.x = THREE.Math.clamp(leftArm.position.x - ARMS_SPEED , 0, 20)
     }
+    if (changeWireframe && !wireframeHasChangedRecently) {
+        allMaterials.forEach(material => material.wireframe = !material.wireframe)
+        wireframeHasChangedRecently = true
+    }
+    if (!changeWireframe)
+        wireframeHasChangedRecently = false;
 }
 
 /////////////
@@ -429,8 +472,15 @@ function animate() {
     render();
 
     delta = clock.getDelta();
+    movableWireframe.box.set(trailerCollisionMin, trailerCollisionMax);
+    immovableWireframe.box.set(truckCollisionMin, truckCollisionMax);
+
+    ANGLE_SPEED = Math.PI*delta
+    ARMS_SPEED = 50*delta
+    TRAILER_SPEED = 100*delta
 
     update();
+    checkCollisions()
 
     requestAnimationFrame(animate);
 }
@@ -466,9 +516,7 @@ function onKeyDown(e) {
             activeCamera = isometricPerspectiveCamera;
             break;
         case 54: // 6
-            allMaterials.forEach(material => {
-                material.wireframe = !material.wireframe
-            })
+            changeWireframe = true;
             break;
         case 113: // q
         case 81: // Q
@@ -536,6 +584,9 @@ function onKeyUp(e){
         case 40:
             moveTrailerDown = false;
             break;
+        case 54:
+            changeWireframe = false;
+        break;
         case 81:
             rotateFeetUp = false;
            break;
