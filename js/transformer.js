@@ -88,7 +88,7 @@ function onKeyDown(e) {
         break;
         case 114: // r
         case 82: // R
-            head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_DELTA, -Math.PI/2, 0)
+            head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_DELTA, 0, Math.PI/2)
         break;
         case 100: // d 
         case 68: // D
@@ -96,13 +96,19 @@ function onKeyDown(e) {
         break;
         case 102: // f
         case 70: // F
-            head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_DELTA, -Math.PI/2, 0)
+            head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_DELTA, 0, Math.PI/2)
         break;
         case 37:
             trailerBody.translateX(-10)
         break;
+        case 38:
+            trailerBody.translateZ(10)
+        break;
         case 39:
             trailerBody.translateX(10)
+        break;
+        case 40:
+            trailerBody.translateZ(-10)
         break;
     }
 }
