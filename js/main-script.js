@@ -41,6 +41,7 @@ var delta;
 
 const ANGLE_SPEED = Math.PI
 const ARMS_SPEED = 50
+const TRAILER_SPEED = 100
 
 /**
  * Stores all materials in the scene. Useful for toggling wireframe.
