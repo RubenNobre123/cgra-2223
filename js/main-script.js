@@ -22,6 +22,20 @@ var baseMaterialRed = new THREE.MeshBasicMaterial(robotRed);
 
 var rightLeg, leftLeg, waist, legs, feet, rightArm, leftArm, head, leftFoot, rightFoot, trailerBody, trailerFront, trailerBack, addTrailerWheel
 
+var rotateHeadDown = false;
+var moveTrailerLeft = false;
+var moveTrailerUp = false;
+var moveTrailerRight = false;
+var moveTrailerDown = false;
+var moveArmsIn = false;
+var moveArmsOut = false;
+var rotateLegsUp = false;
+var rotateFeetDown = false;
+var rotateLegsUp = false;
+var rotateLegsDown = false;
+var rotateHeadUp = false;
+var rotateHeadDown = false;
+
 const ANGLE_DELTA = Math.PI/60
 
 /**
@@ -419,49 +433,47 @@ function onKeyDown(e) {
             break;
         case 113: // q
         case 81: // Q
-            feet.rotation.x = THREE.Math.clamp(feet.rotation.x + ANGLE_DELTA, -Math.PI/2, 0)
+            rotateFeetUp = true;
         break;
         case 97: // a
         case 65: // A
-            feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_DELTA, -Math.PI/2, 0)
+            rotateFeetDown = true;
         break;
         case 115: // s
         case 83: // S
-            legs.rotation.x = THREE.Math.clamp(legs.rotation.x + ANGLE_DELTA, 0, Math.PI/2)
+            rotateLegsUp = true;
         break;
         case 119: // w
         case 87: // W
-            legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_DELTA, 0, Math.PI/2)
+            rotateLegsDown = true;
         break;
         case 101: // e 
         case 69: // E
-            rightArm.translateX(-1) 
-            leftArm.translateX(1) 
+            moveArmsOut = true;
         break;
         case 114: // r
         case 82: // R
-            head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_DELTA, 0, Math.PI/2)
+            rotateHeadUp = true;
         break;
         case 100: // d 
         case 68: // D
-            rightArm.translateX(1) 
-            leftArm.translateX(-1) 
+            moveArmsIn = true;
         break;
         case 102: // f
         case 70: // F
-            head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_DELTA, 0, Math.PI/2)
+            rotateHeadDown = true;
         break;
         case 37:
-            trailerBody.translateX(-10)
+            moveTrailerLeft = true;
         break;
         case 38:
-            trailerBody.translateZ(10)
+            moveTrailerUp = true;
         break;
         case 39:
-            trailerBody.translateX(10)
+            moveTrailerRight = true;
         break;
         case 40:
-            trailerBody.translateZ(-10)
+            moveTrailerDown = true;
         break;
     }
 }
@@ -472,4 +484,42 @@ function onKeyDown(e) {
 function onKeyUp(e){
     'use strict';
 
-}
+    switch (e.keyCode) {
+        case 37:
+            moveTrailerLeft = false;
+            break;
+        case 38:
+            moveTrailerUp = false;
+            break;
+        case 39:
+            moveTrailerRight = false;
+            break;
+        case 40:
+            moveTrailerDown = false;
+            break;
+        case 81:
+            rotateFeetUp = false;
+           break;
+        case 65:
+            rotateFeetDown = false;
+            break;
+        case 87:
+            rotateLegsUp = false;
+            break;
+        case 83:
+            rotateLegsDown = false;
+            break;
+        case 69 :
+            moveArmsOut = false;
+            break;
+        case 68:
+            moveArmsIn = false;
+            break;
+        case 82:
+            rotateHeadUp = false;
+            break;
+        case 70:
+            rotateHeadDown = false;
+            break
+    }
+}	
