@@ -197,16 +197,18 @@ function createRobot() {
     legs.position.set(0,5,0);
     feet = new THREE.Object3D();
     leftFoot = new THREE.Object3D();
-    feet.position.set(0, -255, 0);
+    feet.position.set(0, -250, -15);
     rightFoot = new THREE.Object3D();
 
-    addRobotFoot(rightLeg, rightFoot, -25, -260, 5);
+    legs.add(feet);
+
+    addRobotFoot(rightFoot, -25, -10, 20);
     addRobotLeg(rightLeg, -25, -170, 0);
     addRobotThigh(rightLeg, -25, -52, 0);
     addWheel(rightLeg, -50, -120, 20);
     addWheel(rightLeg, -50, -175, 20);
 
-    addRobotFoot(leftLeg, leftFoot, 25, -260, 5);
+    addRobotFoot(leftFoot, 25, -10, 20);
     addRobotLeg(leftLeg, 25, -170, 0);
     addRobotThigh(leftLeg, 25, -52, 0);
     addWheel(leftLeg, 50, -120, 20);
@@ -247,14 +249,13 @@ function createRobot() {
     //scene.add(feet);
 }
 
-function addRobotFoot(leg, foot, x, y, z) {
+function addRobotFoot(foot, x, y, z) {
     'use strict';
 
     geometry = new THREE.BoxGeometry(40, 10, 50);
     mesh = new THREE.Mesh(geometry, baseMaterialRed);
     mesh.position.set(x, y, z);
     foot.add(mesh);
-    leg.add(mesh);
 }
 
 function addRobotLeg(leg, x, y, z) {
@@ -396,9 +397,9 @@ function update(){
     
 
     if(rotateFeetUp)
-        feet.rotation.x = THREE.Math.clamp(feet.rotation.x + ANGLE_SPEED, 0, Math.PI/2)
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x + ANGLE_SPEED, -Math.PI/2, 0)
     if(rotateFeetDown)
-        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED , 0, Math.PI/2)
+        feet.rotation.x = THREE.Math.clamp(feet.rotation.x - ANGLE_SPEED , -Math.PI/2, 0)
     if(rotateLegsUp)
         legs.rotation.x = THREE.Math.clamp(legs.rotation.x - ANGLE_SPEED, minRotationLegs, maxRotationLegs)
     if(rotateLegsDown)
