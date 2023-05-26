@@ -36,6 +36,9 @@ var rotateLegsDown = false;
 var rotateHeadUp = false;
 var rotateHeadDown = false;
 
+var clock = new THREE.Clock();
+var delta;
+
 const ANGLE_DELTA = Math.PI/60
 
 /**
@@ -163,6 +166,7 @@ function createRobot() {
     legs = new THREE.Object3D();
     legs.position.set(0,5,0);
     feet = new THREE.Object3D();
+    feet.position.set(0, -255, 0);
     leftFoot = new THREE.Object3D();
     rightFoot = new THREE.Object3D();
 
@@ -392,6 +396,8 @@ function init() {
 /////////////////////
 function animate() {
     render();
+
+    delta = clock.getDelta();
 
     requestAnimationFrame(animate);
 }
