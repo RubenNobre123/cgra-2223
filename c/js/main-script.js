@@ -65,8 +65,6 @@ function createScene(){
     drawTree(tree3, -5, 7, 5, 0.3, 0);
 
     drawOvni();
-
-
 }
 
 //////////////////////
@@ -157,6 +155,7 @@ function init() {
     document.body.appendChild(renderer.domElement);
     document.body.appendChild( VRButton.createButton( renderer ) );
     renderer.xr.enabled = true;
+    renderer.shadowMap.enabled = true
 
     createScene();
     createCamera();
@@ -177,7 +176,7 @@ function animate() {
     renderer.setAnimationLoop( function () {
 
         renderer.render( scene, activeCamera);
-        ovni.rotation.z += 0.05;
+        ovni.rotation.y += 0.05;
 
     
     } );
@@ -273,60 +272,63 @@ function drawOvni(){
 
     ovni = new THREE.Object3D();
 
-    const bodyGeometry = new THREE.SphereGeometry(3, 64, 64);
+    const bodyGeometry = new THREE.SphereGeometry(3, 50, 50);
     const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xadd8e6 });
     const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
     bodyMesh.scale.set(1, 0.5, 1);
-    bodyMesh.rotateX(Math.PI / 2);
     ovni.add(bodyMesh);
 
-    const cockpitGeometry = new THREE.SphereGeometry(1.5, 64, 64, 0, Math.PI);
+    const cockpitGeometry = new THREE.SphereGeometry(1.5, 64, 64);
+    cockpitGeometry.thetaLength = Math.PI / 2;
     const cockpitMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff  });
     const cockpitMesh = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
-    cockpitMesh.position.set(0, 0, 1);
+    cockpitMesh.position.set(0, 1, 0);
     ovni.add(cockpitMesh);
     
 
     const numLights = 8; 
     const lightGeometry = new THREE.SphereGeometry(0.2, 8, 8);
     const lightMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const pointLights = [];
 
     for (let i = 0; i < numLights; i++) {
         const angle = (i / numLights) * Math.PI * 2;
         const x = Math.cos(angle) * 2.5;
-        const y = Math.sin(angle) * 2.5;
+        const z = Math.sin(angle) * 2.5;
         const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
-        lightMesh.position.set(x, y, -0.75);
+        lightMesh.position.set(x, -0.75, z);
+
+        const pointLight = new THREE.PointLight(0xffff00, 1, 5);
+        pointLight.position.set(x, -3, z);
+        scene.add(pointLight);
+        pointLights.push(pointLight);
+
+        const sphereSize = 1;
+        const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+        scene.add( pointLightHelper );
+
+        lightMesh.add(pointLight);
         ovni.add(lightMesh);
     }
 
     const bottomGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16);
     const bottomMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     const bottomMesh = new THREE.Mesh(bottomGeometry, bottomMaterial);
-    bottomMesh.position.set(0, 0, -1.5);
+    bottomMesh.position.set(0, -1.5, 0);
     bottomMesh.rotateX(Math.PI / 2);
     ovni.add(bottomMesh);
 
+    var slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI/8, 0.5, 2 );
+    slight.position.set( bottomMesh.position.x, bottomMesh.position.y, bottomMesh.position.z );
+    slight.target.position.set( bottomMesh.position.x, 0, bottomMesh.position.z );
+    
+    const spotLightHelper = new THREE.SpotLightHelper( slight );
+    scene.add( spotLightHelper );
+
+    ovni.add(slight);
+
     ovni.position.set(0, 20, 0);
     ovni.scale.set(1.5, 1.5, 1.5);
-    ovni.rotateX(-Math.PI / 2);
     scene.add(ovni);
-
-    const pointLights = [];
-
-    for (let i = 0; i < numLights; i++) {
-        const angle = (i / numLights) * Math.PI * 2;
-        const x = Math.cos(angle) * 2.5;
-        const y = Math.sin(angle) * 2.5;
-        const pointLight = new THREE.PointLight(0xffff00, 1, 5);
-        pointLight.position.set(x, y, -3);
-        scene.add(pointLight);
-        pointLights.push(pointLight);
-    }
-
-    const spotLight = new THREE.SpotLight(0xffff00, 1);
-    spotLight.position.set(0, 0, -3);
-    spotLight.target = bottomMesh;
-    scene.add(spotLight);
 }
 
