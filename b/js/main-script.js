@@ -429,9 +429,9 @@ function update(){
 
     if (inAnimation && !lockTrailer) {
         if (Math.abs(trailerBody.position.x - TRAILER_JOINT_X) > TRAILER_SPEED) {
-            trailerBody.position.x += trailerBody.position.x < TRAILER_JOINT_X ? TRAILER_SPEED : -TRAILER_SPEED
-            trailerCollisionMin.x += trailerBody.position.x < TRAILER_JOINT_X ? TRAILER_SPEED : -TRAILER_SPEED
-            trailerCollisionMax.x += trailerBody.position.x < TRAILER_JOINT_X ? TRAILER_SPEED : -TRAILER_SPEED
+            trailerBody.position.x += trailerBody.position.x < TRAILER_JOINT_X ? 2*TRAILER_SPEED : -TRAILER_SPEED
+            trailerCollisionMin.x += trailerBody.position.x < TRAILER_JOINT_X ? 2*TRAILER_SPEED : -TRAILER_SPEED
+            trailerCollisionMax.x += trailerBody.position.x < TRAILER_JOINT_X ? 2*TRAILER_SPEED : -TRAILER_SPEED
         }
         else{
             trailerBody.position.x = TRAILER_JOINT_X 
@@ -487,11 +487,11 @@ function update(){
         lockTrailer = false;
     }
     if(rotateHeadUp) {
-        head.rotation.x = THREE.Math.clamp(head.rotation.x - ANGLE_SPEED, minRotationHead, maxRotationHead)
+        head.rotation.y = THREE.Math.clamp(head.rotation.y - ANGLE_SPEED, minRotationHead, maxRotationHead)
         lockTrailer = false;
     }
     if(rotateHeadDown) {
-        head.rotation.x = THREE.Math.clamp(head.rotation.x + ANGLE_SPEED, minRotationHead, maxRotationHead)
+        head.rotation.y = THREE.Math.clamp(head.rotation.y + ANGLE_SPEED, minRotationHead, maxRotationHead)
         lockTrailer = false;
     }
     if (moveTrailerLeft && !lockTrailer) {
@@ -570,7 +570,7 @@ function animate() {
 
     ANGLE_SPEED = Math.PI*delta
     ARMS_SPEED = 50*delta
-    TRAILER_SPEED = 100*delta
+    TRAILER_SPEED = 200*delta
 
     update();
     checkCollisions()
