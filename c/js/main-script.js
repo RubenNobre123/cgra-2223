@@ -7,6 +7,9 @@ var moveOvniLeft = false;
 var moveOvniUp = false;
 var moveOvniDown = false;
 
+var slight
+var pointLights = [];
+
 const clock = new THREE.Clock();
 var delta;
 
@@ -256,7 +259,16 @@ function onKeyDown(e) {
         case 40: // down arrow
             moveOvniDown = true;
             break;
-
+        //case for 's' and 'S' to change the spotlight
+        case 83: // S
+        case 115: // s
+            spotlight.visible = !spotlight.visible;
+            break;
+            //case for 'p' and 'P' to change the pointlights
+        case 80: // P
+        case 112: // p
+            switchPointLights();
+            break;
     }
 
 }
@@ -349,7 +361,7 @@ function drawOvni(){
     const numLights = 8; 
     const lightGeometry = new THREE.SphereGeometry(0.2, 8, 8);
     const lightMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    const pointLights = [];
+    pointLights = [];
 
     for (let i = 0; i < numLights; i++) {
         const angle = (i / numLights) * Math.PI * 2;
@@ -378,7 +390,7 @@ function drawOvni(){
     bottomMesh.rotateX(Math.PI / 2);
     ovni.add(bottomMesh);
 
-    var slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI/8, 0.5, 2 );
+    slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI/8, 0.5, 2 );
     slight.position.set( bottomMesh.position.x, bottomMesh.position.y, bottomMesh.position.z );
     slight.target.position.set( bottomMesh.position.x, 0, bottomMesh.position.z );
     
@@ -392,3 +404,12 @@ function drawOvni(){
     scene.add(ovni);
 }
 
+
+
+function switchPointLights(){
+    'use strict';
+
+    for (let i = 0; i < pointLights.length; i++) {
+        pointLights[i].visible = !pointLights[i].visible;
+    }
+}
