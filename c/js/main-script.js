@@ -2,6 +2,17 @@ var scene, renderer, perspectiveCamera, bufferTexture;
 var frontalCamera, sideCamera, topCamera, isometricOrthogonalCamera, isometricPerspectiveCamera, activeCamera;
 var ovni;
 
+var moveOvniRight = false;
+var moveOvniLeft = false;
+var moveOvniUp = false;
+var moveOvniDown = false;
+
+const clock = new THREE.Clock();
+var delta;
+
+var OVNI_SPEED
+
+
 //////////////////////
 /* GLOBAL VARIABLES */
 //////////////////////
@@ -128,6 +139,20 @@ function handleCollisions(){
 /* UPDATE */
 ////////////
 function update(){
+    'use strict';
+    
+    if(moveOvniRight){
+        ovni.position.x += OVNI_SPEED;
+    }
+    if(moveOvniLeft){
+        ovni.position.x -= OVNI_SPEED;
+    }
+    if(moveOvniUp){
+        ovni.position.z -= OVNI_SPEED;
+    }
+    if(moveOvniDown){
+        ovni.position.z += OVNI_SPEED;
+    }
 }
 
 /////////////
@@ -165,6 +190,7 @@ function init() {
     render();
 
     window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
 
 }
 
@@ -173,12 +199,18 @@ function init() {
 /////////////////////
 function animate() {
     'use strict';
-    renderer.setAnimationLoop( function () {
-
-        renderer.render( scene, activeCamera);
-        ovni.rotation.y += 0.05;
 
     
+    
+    renderer.setAnimationLoop( function () {
+    
+        delta = clock.getDelta();
+        OVNI_SPEED = 10*delta
+    
+        update();
+    
+        renderer.render( scene, activeCamera);
+        ovni.rotation.y += 0.05;    
     } );
 }
 
@@ -212,6 +244,19 @@ function onKeyDown(e) {
         case 53: // 5
             activeCamera = perspectiveCamera;
             break;
+        case 37: // left arrow
+            moveOvniLeft = true;
+            break;
+        case 38: // up arrow
+            moveOvniUp = true;
+            break;
+        case 39: // right arrow
+            moveOvniRight = true;
+            break;
+        case 40: // down arrow
+            moveOvniDown = true;
+            break;
+
     }
 
 }
@@ -221,6 +266,21 @@ function onKeyDown(e) {
 ///////////////////////
 function onKeyUp(e){
     'use strict';
+
+    switch (e.keyCode) {
+        case 37: // left arrow
+            moveOvniLeft = false;
+            break;
+        case 38: // up arrow
+            moveOvniUp = false;
+            break;
+        case 39: // right arrow
+            moveOvniRight = false;
+            break;
+        case 40: // down arrow
+            moveOvniDown = false;
+            break;
+    }
 
 }
 
