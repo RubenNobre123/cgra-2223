@@ -9,11 +9,17 @@ var moveOvniDown = false;
 
 var slight
 var pointLights = [];
+var trees = [];
+var plane;
 
 const clock = new THREE.Clock();
 var delta;
 
 var OVNI_SPEED
+
+const lambertMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+const phongMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+const toonMaterial = new THREE.MeshToonMaterial({ color: 0x0000ff });
 
 
 //////////////////////
@@ -37,7 +43,7 @@ function createScene(){
     const planeWidth = 45;
     const planeHeight = 45;
 
-    var plane = new THREE.Object3D();
+    plane = new THREE.Object3D();
     const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
     const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 , side: THREE.DoubleSide}); 
     const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial); 
@@ -71,12 +77,15 @@ function createScene(){
 
     var tree1 = new THREE.Object3D();
     drawTree(tree1, 7, 7, 0, 0.5, -Math.PI / 2);
+    trees.push(tree1);
 
     var tree2 = new THREE.Object3D();
     drawTree(tree2, -5, 7, 20, 0.7, Math.PI /2);
+    trees.push(tree2);
 
     var tree3 = new THREE.Object3D();
     drawTree(tree3, -5, 7, 5, 0.3, 0);
+    trees.push(tree3);
 
     drawOvni();
 }
@@ -179,6 +188,8 @@ function init() {
     renderer = new THREE.WebGLRenderer({
         antialias: true
     });
+
+
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     document.body.appendChild( VRButton.createButton( renderer ) );
@@ -194,6 +205,7 @@ function init() {
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
+    window.addEventListener("resize", onResize);
 
 }
 
@@ -223,6 +235,12 @@ function animate() {
 function onResize() { 
     'use strict';
 
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    if (window.innerHeight > 0 && window.innerWidth > 0) {
+        activeCamera.aspect = window.innerWidth / window.innerHeight;
+        activeCamera.updateProjectionMatrix();
+    }
 }
 
 ///////////////////////
@@ -269,6 +287,16 @@ function onKeyDown(e) {
         case 112: // p
             switchPointLights();
             break;
+        case 54: // 6
+            changeMaterial(lambertMaterial);
+            break;
+        case 55: // 7   
+            changeMaterial(phongMaterial);
+            break;
+        case 56: // 8
+            changeMaterial(toonMaterial);
+            break;
+
     }
 
 }
@@ -411,5 +439,20 @@ function switchPointLights(){
 
     for (let i = 0; i < pointLights.length; i++) {
         pointLights[i].visible = !pointLights[i].visible;
+    }
+}
+
+function changeMaterial(material){
+    'use strict';
+
+
+    for (let i = 0; i < ovni.children.length; i++) {
+        ovni.children[i].material = material;
+    }
+
+    for (let i = 0; i < trees.length; i++) {
+        for (let j = 0; j < trees[i].children.length; j++) {
+            trees[i].children[j].material = material;
+        }
     }
 }
