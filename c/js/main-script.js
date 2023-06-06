@@ -1,11 +1,16 @@
 var scene, renderer, perspectiveCamera, bufferTexture;
 var frontalCamera, sideCamera, topCamera, isometricOrthogonalCamera, isometricPerspectiveCamera, activeCamera;
 var ovni;
+var textureSize = 512; // Size of the texture
+var skyTexture;
+var skyMaterial;
+var currentTextureType;
 
 var moveOvniRight = false;
 var moveOvniLeft = false;
 var moveOvniUp = false;
 var moveOvniDown = false;
+var changeSky = false;
 
 var slight
 var pointLights = [];
@@ -38,7 +43,6 @@ function createScene(){
     scene.add( axesHelper );
 
     scene.position.set(0,0,0)
-    
 
     const planeWidth = 45;
     const planeHeight = 45;
@@ -52,26 +56,6 @@ function createScene(){
     plane.position.set(0, 0, 0); 
     plane.rotateX(Math.PI / 2); 
     scene.add(plane); 
-
-    var colorArray = [];
-    bufferTexture = new THREE.BufferGeometry();
-    bufferTexture.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
-        -15, -15, 0,
-        15, -15, 0,
-        15, 15, 0,
-        -15, 15, 0
-    ]), 3));
-
-    const indices = [
-        0, 1, 2,
-        2, 3, 0
-    ]
-    var color1 = new THREE.Color(0xff0000);
-    var color2 = new THREE.Color(0x0000ff);
-    colorArray = color1.toArray()
-                .concat(color2.toArray())
-                .concat(color2.toArray())
-                .concat(color1.toArray());
 
     drawHouse();
 
@@ -88,6 +72,7 @@ function createScene(){
     trees.push(tree3);
 
     drawOvni();
+    drawSkydome();
 }
 
 //////////////////////
@@ -102,23 +87,23 @@ function createCamera() {
     var distance = 30;
 
     perspectiveCamera = new THREE.PerspectiveCamera(70, aspectRatio, 1, 1000);
-    perspectiveCamera.position.set(30, 30, 30)
+    perspectiveCamera.position.set(50, 50, 50)
     perspectiveCamera.lookAt(scene.position);
 
     frontalCamera = new THREE.OrthographicCamera(-aspectRatio * distance , aspectRatio*distance, distance, -distance, 1, 1000);
-    frontalCamera.position.set(0, 0, 30)
+    frontalCamera.position.set(0, 0, 50)
     frontalCamera.lookAt(scene.position);
 
     sideCamera = new THREE.OrthographicCamera(-aspectRatio* distance, aspectRatio* distance, distance, -distance, 1, 1000);
-    sideCamera.position.set(30, 0, 0)
+    sideCamera.position.set(50, 0, 0)
     sideCamera.lookAt(scene.position);
 
     topCamera = new THREE.OrthographicCamera(-aspectRatio * distance, aspectRatio * distance, distance, -distance, 1, 1000);
-    topCamera.position.set(0, 30, 0)
+    topCamera.position.set(0, 50, 0)
     topCamera.lookAt(scene.position);
 
     isometricOrthogonalCamera = new THREE.OrthographicCamera(-aspectRatio * distance, aspectRatio * distance, distance, -distance, 1, 1000);
-    isometricOrthogonalCamera.position.set(30, 30, 30)
+    isometricOrthogonalCamera.position.set(10, 10, 10)
     isometricOrthogonalCamera.lookAt(scene.position);
 }
 
@@ -164,6 +149,10 @@ function update(){
     }
     if(moveOvniDown){
         ovni.position.z += OVNI_SPEED;
+    }
+    if(changeSky) {
+        skyTexture = createSkyTexture();
+        skyMaterial.map = skyTexture;
     }
 }
 
@@ -243,6 +232,37 @@ function onResize() {
     }
 }
 
+function createSkyTexture() {
+    var canvas = document.createElement('canvas');
+    canvas.width = textureSize;
+    canvas.height = textureSize;
+    var context = canvas.getContext('2d');
+  
+    // Create the gradient background
+    var gradient = context.createLinearGradient(0, 0, 0, textureSize);
+    gradient.addColorStop(0, '#00008r'); // Dark blue
+    gradient.addColorStop(1, '#8a2be2'); // Dark violet
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, textureSize, textureSize);
+  
+    // Draw the stars
+    var starRadius = 1;
+    var numStars = 600;
+    for (var i = 0; i < numStars; i++) {
+      var x = Math.random() * textureSize;
+      var y = Math.random() * textureSize;
+      context.fillStyle = '#ffffff';
+      context.beginPath();
+      context.arc(x, y, starRadius, 0, 2 * Math.PI);
+      context.fill();
+    }
+  
+    var texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+  
+    return texture;
+  }
+
 ///////////////////////
 /* KEY DOWN CALLBACK */
 ///////////////////////
@@ -254,7 +274,7 @@ function onKeyDown(e) {
             activeCamera = frontalCamera;
             break;
         case 50: // 2
-            activeCamera = sideCamera;
+            changeSky = true;
             break;
         case 51: // 3
             activeCamera = topCamera;
@@ -319,6 +339,9 @@ function onKeyUp(e){
             break;
         case 40: // down arrow
             moveOvniDown = false;
+            break;
+        case 50: // 2
+            changeSky = false;
             break;
     }
 
@@ -430,6 +453,48 @@ function drawOvni(){
     ovni.position.set(0, 20, 0);
     ovni.scale.set(1.5, 1.5, 1.5);
     scene.add(ovni);
+}
+
+
+function drawSkydome(){
+    'use strict';
+
+    var canvas = document.createElement('canvas');
+    canvas.width = textureSize;
+    canvas.height = textureSize;
+    var context = canvas.getContext('2d');
+  
+    // Create the gradient background
+    var gradient = context.createLinearGradient(0, 0, 0, textureSize);
+    gradient.addColorStop(0, '#00008b'); // Dark blue
+    gradient.addColorStop(1, '#8a2be2'); // Dark violet
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, textureSize, textureSize);
+
+    var starRadius = 1;
+    var numStars = 600;
+    for (var i = 0; i < numStars; i++) {
+        var x = Math.random() * textureSize;
+        var y = Math.random() * textureSize;
+        context.fillStyle = '#ffffff';
+        context.beginPath();
+        context.arc(x, y, starRadius, 0, 2 * Math.PI);
+        context.fill();
+  }
+  
+    var texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+
+    var radius = 3;
+    var radialSegments = 32;
+    var material = new THREE.MeshBasicMaterial({map: texture});
+    var hemiSphereGeom = new THREE.SphereBufferGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, 0, Math.PI * 0.5);
+    var hemiSphere = new THREE.Mesh(hemiSphereGeom, material);
+    
+    hemiSphere.material.side = THREE.DoubleSide;
+    hemiSphere.scale.set(10,10,10);
+    scene.add(hemiSphere);
+
 }
 
 
