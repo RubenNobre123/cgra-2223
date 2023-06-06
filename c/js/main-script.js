@@ -45,7 +45,7 @@ function createScene(){
     scene.position.set(0,0,0)
 
     var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~ist199226/heightmap.png");
-    const planeGeometry = new THREE.PlaneGeometry(200, 200, 200, 100);
+    const planeGeometry = new THREE.PlaneGeometry(75, 75, 100, 100);
     const planeMaterial = new THREE.MeshPhongMaterial(
     {
         color : 0x00FF00,
@@ -90,7 +90,7 @@ function createCamera() {
     var distance = 30;
 
     perspectiveCamera = new THREE.PerspectiveCamera(70, aspectRatio, 1, 1000);
-    perspectiveCamera.position.set(50, 50, 50)
+    perspectiveCamera.position.set(35, 35, 35)
     perspectiveCamera.lookAt(scene.position);
 
     frontalCamera = new THREE.OrthographicCamera(-aspectRatio * distance , aspectRatio*distance, distance, -distance, 1, 1000);
@@ -494,11 +494,12 @@ function drawSkydome(){
     var radius = 3;
     var radialSegments = 32;
     var material = new THREE.MeshBasicMaterial({map: texture});
-    var hemiSphereGeom = new THREE.SphereBufferGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, 0, Math.PI * 0.5);
+    var hemiSphereGeom = new THREE.SphereBufferGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, Math.PI / 4, Math.PI / 2);
     var hemiSphere = new THREE.Mesh(hemiSphereGeom, material);
     
     hemiSphere.material.side = THREE.DoubleSide;
-    hemiSphere.scale.set(10,10,10);
+    hemiSphere.scale.set(40,40,40);
+    hemiSphere.position.y -= 50;
     scene.add(hemiSphere);
 
 }
