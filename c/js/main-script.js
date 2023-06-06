@@ -1,16 +1,16 @@
 var scene, renderer, perspectiveCamera, bufferTexture;
 var frontalCamera, sideCamera, topCamera, isometricOrthogonalCamera, isometricPerspectiveCamera, activeCamera;
-var ovni;
 var textureSize = 512; // Size of the texture
 var skyTexture;
 var skyMaterial;
 var currentTextureType;
-
-var moveOvniRight = false;
-var moveOvniLeft = false;
-var moveOvniUp = false;
-var moveOvniDown = false;
 var changeSky = false;
+var UFO;
+
+var moveUFORight = false;
+var moveUFOLeft = false;
+var moveUFOUp = false;
+var moveUFODown = false;
 
 var slight
 var pointLights = [];
@@ -20,7 +20,7 @@ var plane;
 const clock = new THREE.Clock();
 var delta;
 
-var OVNI_SPEED
+var UFO_SPEED
 
 const lambertMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
 const phongMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
@@ -44,18 +44,20 @@ function createScene(){
 
     scene.position.set(0,0,0)
 
-    const planeWidth = 45;
-    const planeHeight = 45;
+    var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~ist199226/heightmap.png");
+    const planeGeometry = new THREE.PlaneGeometry(200, 200, 200, 100);
+    const planeMaterial = new THREE.MeshPhongMaterial(
+    {
+        color : 0x00FF00,
+        side: THREE.DoubleSide,
+        displacementMap : heightMap,
+        displacementScale : 20
+    });
 
-    plane = new THREE.Object3D();
-    const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
-    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 , side: THREE.DoubleSide}); 
-    const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial); 
-
-    plane.add(planeMesh);
-    plane.position.set(0, 0, 0); 
-    plane.rotateX(Math.PI / 2); 
-    scene.add(plane); 
+    plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.position.set(0, 10, 0); 
+    plane.rotation.x = Math.PI /2;
+    scene.add(plane);
 
     drawHouse();
 
@@ -71,7 +73,8 @@ function createScene(){
     drawTree(tree3, -5, 7, 5, 0.3, 0);
     trees.push(tree3);
 
-    drawOvni();
+    
+    drawUFO();
     drawSkydome();
 }
 
@@ -138,17 +141,17 @@ function handleCollisions(){
 function update(){
     'use strict';
     
-    if(moveOvniRight){
-        ovni.position.x += OVNI_SPEED;
+    if(moveUFORight){
+        UFO.position.x += UFO_SPEED;
     }
-    if(moveOvniLeft){
-        ovni.position.x -= OVNI_SPEED;
+    if(moveUFOLeft){
+        UFO.position.x -= UFO_SPEED;
     }
-    if(moveOvniUp){
-        ovni.position.z -= OVNI_SPEED;
+    if(moveUFOUp){
+        UFO.position.z -= UFO_SPEED;
     }
-    if(moveOvniDown){
-        ovni.position.z += OVNI_SPEED;
+    if(moveUFODown){
+        UFO.position.z += UFO_SPEED;
     }
     if(changeSky) {
         skyTexture = createSkyTexture();
@@ -209,12 +212,12 @@ function animate() {
     renderer.setAnimationLoop( function () {
     
         delta = clock.getDelta();
-        OVNI_SPEED = 10*delta
+        UFO_SPEED = 10*delta
     
         update();
     
         renderer.render( scene, activeCamera);
-        ovni.rotation.y += 0.05;    
+        UFO.rotation.y += 0.05;    
     } );
 }
 
@@ -286,16 +289,16 @@ function onKeyDown(e) {
             activeCamera = perspectiveCamera;
             break;
         case 37: // left arrow
-            moveOvniLeft = true;
+            moveUFOLeft = true;
             break;
         case 38: // up arrow
-            moveOvniUp = true;
+            moveUFOUp = true;
             break;
         case 39: // right arrow
-            moveOvniRight = true;
+            moveUFORight = true;
             break;
         case 40: // down arrow
-            moveOvniDown = true;
+            moveUFODown = true;
             break;
         //case for 's' and 'S' to change the spotlight
         case 83: // S
@@ -329,16 +332,16 @@ function onKeyUp(e){
 
     switch (e.keyCode) {
         case 37: // left arrow
-            moveOvniLeft = false;
+            moveUFOLeft = false;
             break;
         case 38: // up arrow
-            moveOvniUp = false;
+            moveUFOUp = false;
             break;
         case 39: // right arrow
-            moveOvniRight = false;
+            moveUFORight = false;
             break;
         case 40: // down arrow
-            moveOvniDown = false;
+            moveUFODown = false;
             break;
         case 50: // 2
             changeSky = false;
@@ -390,23 +393,23 @@ function drawTree(tree, x, y, z, high, rotation){
     scene.add(tree);
 }
 
-function drawOvni(){
+function drawUFO(){
     'use strict'
 
-    ovni = new THREE.Object3D();
+    UFO = new THREE.Object3D();
 
     const bodyGeometry = new THREE.SphereGeometry(3, 50, 50);
     const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xadd8e6 });
     const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
     bodyMesh.scale.set(1, 0.5, 1);
-    ovni.add(bodyMesh);
+    UFO.add(bodyMesh);
 
     const cockpitGeometry = new THREE.SphereGeometry(1.5, 64, 64);
     cockpitGeometry.thetaLength = Math.PI / 2;
     const cockpitMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff  });
     const cockpitMesh = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
     cockpitMesh.position.set(0, 1, 0);
-    ovni.add(cockpitMesh);
+    UFO.add(cockpitMesh);
     
 
     const numLights = 8; 
@@ -431,7 +434,7 @@ function drawOvni(){
         scene.add( pointLightHelper );
 
         lightMesh.add(pointLight);
-        ovni.add(lightMesh);
+        UFO.add(lightMesh);
     }
 
     const bottomGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16);
@@ -439,20 +442,23 @@ function drawOvni(){
     const bottomMesh = new THREE.Mesh(bottomGeometry, bottomMaterial);
     bottomMesh.position.set(0, -1.5, 0);
     bottomMesh.rotateX(Math.PI / 2);
-    ovni.add(bottomMesh);
+    UFO.add(bottomMesh);
 
     slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI/8, 0.5, 2 );
     slight.position.set( bottomMesh.position.x, bottomMesh.position.y, bottomMesh.position.z );
-    slight.target.position.set( bottomMesh.position.x, 0, bottomMesh.position.z );
+    slight.target.position.set(bottomMesh.position.x, 0, bottomMesh.position.z);
     
     const spotLightHelper = new THREE.SpotLightHelper( slight );
     scene.add( spotLightHelper );
-
-    ovni.add(slight);
-
-    ovni.position.set(0, 20, 0);
-    ovni.scale.set(1.5, 1.5, 1.5);
-    scene.add(ovni);
+    
+    UFO.add(slight);
+    UFO.add(slight.target); // Add this line
+    
+    UFO.position.set(0, 20, 0);
+    slight.target.position.set(UFO.position.x, 0, UFO.position.z);
+    
+    UFO.scale.set(1.5, 1.5, 1.5);
+    scene.add(UFO);
 }
 
 
@@ -511,8 +517,8 @@ function changeMaterial(material){
     'use strict';
 
 
-    for (let i = 0; i < ovni.children.length; i++) {
-        ovni.children[i].material = material;
+    for (let i = 0; i < UFO.children.length; i++) {
+        UFO.children[i].material = material;
     }
 
     for (let i = 0; i < trees.length; i++) {
