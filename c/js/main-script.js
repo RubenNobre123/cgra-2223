@@ -1,5 +1,5 @@
-var scene, renderer, perspectiveCamera, bufferTexture;
-var frontalCamera, sideCamera, topCamera, isometricOrthogonalCamera, isometricPerspectiveCamera, activeCamera;
+var scene, renderer, bufferTexture;
+var camera;
 var textureSize = 512; // Size of the texture
 var skyTexture;
 var skyMaterial;
@@ -11,6 +11,8 @@ var moveUFORight = false;
 var moveUFOLeft = false;
 var moveUFOUp = false;
 var moveUFODown = false;
+
+var orbitControls;
 
 var slight
 var pointLights = [];
@@ -45,7 +47,7 @@ function createScene(){
     scene.position.set(0,0,0)
 
     var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~ist199226/heightmap.png");
-    const planeGeometry = new THREE.PlaneGeometry(75, 75, 100, 100);
+    const planeGeometry = new THREE.PlaneGeometry(300, 300, 100, 100);
     const planeMaterial = new THREE.MeshPhongMaterial(
     {
         color : 0x00FF00,
@@ -76,6 +78,7 @@ function createScene(){
     
     drawUFO();
     drawSkydome();
+    drawMoon();
 }
 
 //////////////////////
@@ -87,27 +90,10 @@ function createCamera() {
     var height = window.innerHeight;
 
     var aspectRatio = width / height;
-    var distance = 30;
 
-    perspectiveCamera = new THREE.PerspectiveCamera(70, aspectRatio, 1, 1000);
-    perspectiveCamera.position.set(35, 35, 35)
-    perspectiveCamera.lookAt(scene.position);
-
-    frontalCamera = new THREE.OrthographicCamera(-aspectRatio * distance , aspectRatio*distance, distance, -distance, 1, 1000);
-    frontalCamera.position.set(0, 0, 50)
-    frontalCamera.lookAt(scene.position);
-
-    sideCamera = new THREE.OrthographicCamera(-aspectRatio* distance, aspectRatio* distance, distance, -distance, 1, 1000);
-    sideCamera.position.set(50, 0, 0)
-    sideCamera.lookAt(scene.position);
-
-    topCamera = new THREE.OrthographicCamera(-aspectRatio * distance, aspectRatio * distance, distance, -distance, 1, 1000);
-    topCamera.position.set(0, 50, 0)
-    topCamera.lookAt(scene.position);
-
-    isometricOrthogonalCamera = new THREE.OrthographicCamera(-aspectRatio * distance, aspectRatio * distance, distance, -distance, 1, 1000);
-    isometricOrthogonalCamera.position.set(10, 10, 10)
-    isometricOrthogonalCamera.lookAt(scene.position);
+    camera = new THREE.PerspectiveCamera(70, aspectRatio, 1, 1000);
+    camera.position.set(35, 35, 35)
+    camera.lookAt(scene.position);
 }
 
 
@@ -168,7 +154,7 @@ function render() {
 
     //renderer.render(scene, perspectiveCamera, bufferTexture);
 
-	renderer.render(scene, activeCamera);
+	renderer.render(scene, camera);
 }
 
 
@@ -190,9 +176,7 @@ function init() {
 
     createScene();
     createCamera();
-
-    activeCamera = perspectiveCamera;
-
+    orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
     render();
 
     window.addEventListener("keydown", onKeyDown);
@@ -393,6 +377,17 @@ function drawTree(tree, x, y, z, high, rotation){
     scene.add(tree);
 }
 
+
+function drawMoon() {
+    const moonGeometry = new THREE.SphereGeometry(5, 50, 50);
+    const moonMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+    const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+    moon.position.set(10, 20, 10);
+
+    scene.add(moon);
+
+}
+
 function drawUFO(){
     'use strict'
 
@@ -486,7 +481,7 @@ function drawSkydome(){
         context.beginPath();
         context.arc(x, y, starRadius, 0, 2 * Math.PI);
         context.fill();
-  }
+    }
   
     var texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
@@ -499,7 +494,6 @@ function drawSkydome(){
     
     hemiSphere.material.side = THREE.DoubleSide;
     hemiSphere.scale.set(40,40,40);
-    hemiSphere.position.y -= 50;
     scene.add(hemiSphere);
 
 }
