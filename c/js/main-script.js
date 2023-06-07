@@ -57,23 +57,28 @@ function createScene(){
     });
 
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.position.set(0, 10, 0); 
+    plane.position.set(0, 5, 0); 
+    plane.scale.set(2, 2, 2);
     plane.rotation.x = Math.PI /2;
     scene.add(plane);
 
     drawHouse();
 
     var tree1 = new THREE.Object3D();
-    drawTree(tree1, 7, 7, 0, 0.5, -Math.PI / 2);
+    drawTree(tree1, 0, 7, -20, 5.5, -Math.PI / 2);
     trees.push(tree1);
 
     var tree2 = new THREE.Object3D();
-    drawTree(tree2, -5, 7, 20, 0.7, Math.PI /2);
+    drawTree(tree2, -40, 7, 100, 7, Math.PI /2);
     trees.push(tree2);
 
     var tree3 = new THREE.Object3D();
-    drawTree(tree3, -5, 7, 5, 0.3, 0);
+    drawTree(tree3, -100, 7, 40, 4.5, 0);
     trees.push(tree3);
+
+    var tree4 = new THREE.Object3D();
+    drawTree(tree4, 70, 7, -100, 6, 0);
+    trees.push(tree4);
 
     
     drawUFO();
@@ -357,7 +362,7 @@ function drawTree(tree, x, y, z, high, rotation){
     tree.add(branchMesh);
 
     const foliageGeometry = new THREE.SphereGeometry(2, 50, 50);
-    foliageGeometry.scale(3, 0.7, 3);
+    foliageGeometry.scale(3, 1.5, 3);
     const foliageMaterial = new THREE.MeshBasicMaterial({ color: 0x006400 });
     const foliageMesh = new THREE.Mesh(foliageGeometry, foliageMaterial);
     foliageMesh.position.set(0, 6, 0);
@@ -371,18 +376,22 @@ function drawTree(tree, x, y, z, high, rotation){
     tree.add(foliageMesh2);
 
     tree.rotateY(rotation);
-    tree.scale.set(0.5, high, 0.5);
-    tree.position.set(x, y, z);
+    tree.scale.set(2, high, 2);
+    tree.position.set(x, 2*y, z);
 
     scene.add(tree);
 }
 
 
 function drawMoon() {
-    const moonGeometry = new THREE.SphereGeometry(5, 50, 50);
+    const moonGeometry = new THREE.SphereGeometry(15, 50, 50);
     const moonMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
     const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-    moon.position.set(10, 20, 10);
+    moon.position.set(0, 150, 150);
+
+    const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+    light.position.set( moon.position.x, moon.position.y, moon.position.z );
+    moon.add(light); 
 
     scene.add(moon);
 
@@ -449,10 +458,10 @@ function drawUFO(){
     UFO.add(slight);
     //UFO.add(slight.target); // Add this line
     
-    UFO.position.set(0, 20, 0);
+    UFO.position.set(0, 110, 0);
     //slight.target.position.set(UFO.position.x, 0, UFO.position.z);
     
-    UFO.scale.set(1.5, 1.5, 1.5);
+    UFO.scale.set(10, 10, 10);
     scene.add(UFO);
 }
 
@@ -486,13 +495,18 @@ function drawSkydome(){
     var texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
 
-    var radius = 3;
+    var radius = 10;
     var radialSegments = 32;
-    var material = new THREE.MeshBasicMaterial({map: texture});
-    var hemiSphereGeom = new THREE.SphereBufferGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, Math.PI / 4, Math.PI / 2);
+    var material = new THREE.MeshStandardMaterial({map:texture});
+    var hemiSphereGeom = new THREE.SphereBufferGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, 0, Math.PI * 0.5);
     var hemiSphere = new THREE.Mesh(hemiSphereGeom, material);
-    
+    var capGeom = new THREE.CircleBufferGeometry(radius, radialSegments);
+    capGeom.rotateX(Math.PI * 0.5);
+    var cap = new THREE.Mesh(capGeom, material);
+    hemiSphere.add(cap);
+        
     hemiSphere.material.side = THREE.DoubleSide;
+
     hemiSphere.scale.set(40,40,40);
     scene.add(hemiSphere);
 
