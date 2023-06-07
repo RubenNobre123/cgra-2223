@@ -48,7 +48,7 @@ function createScene(){
     scene.position.set(0,0,0)
 
     var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~ist199226/heightmap.png");
-    const planeGeometry = new THREE.PlaneGeometry(400, 400, 100, 100);
+    const planeGeometry = new THREE.PlaneGeometry(100, 100, 100, 100);
     const planeMaterial = new THREE.MeshPhongMaterial(
     {
         color : 0x00FF00,
@@ -59,26 +59,26 @@ function createScene(){
 
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.position.set(0, 0, 0); 
-    plane.scale.set(2, 2, 2);
+    plane.scale.set(3, 3, 3);
     plane.rotation.x = Math.PI /2;
     scene.add(plane);
 
     drawHouse();
 
     var tree1 = new THREE.Object3D();
-    drawTree(tree1, 0, 7, -20, 5.5, -Math.PI / 2);
+    drawTree(tree1, 0, 2, -20, 8, -Math.PI / 2);
     trees.push(tree1);
 
     var tree2 = new THREE.Object3D();
-    drawTree(tree2, -40, 7, 100, 7, Math.PI /2);
+    drawTree(tree2, -20, 2, 15, 9, Math.PI /2);
     trees.push(tree2);
 
     var tree3 = new THREE.Object3D();
-    drawTree(tree3, -100, 7, 40, 4.5, 0);
+    drawTree(tree3, 10, 2, 20, 7, 0);
     trees.push(tree3);
 
     var tree4 = new THREE.Object3D();
-    drawTree(tree4, 70, 7, -100, 6, 0);
+    drawTree(tree4, 20, 2, -20, 9, 0);
     trees.push(tree4);
 
     
@@ -235,7 +235,7 @@ function createSkyTexture() {
     // Create the gradient background
     var gradient = context.createLinearGradient(0, 0, 0, textureSize);
     gradient.addColorStop(0, '#00008r'); // Dark blue
-    gradient.addColorStop(1, '#8a2be2'); // Dark violet
+    gradient.addColorStop(1, '#9400d3'); // Dark violet
     context.fillStyle = gradient;
     context.fillRect(0, 0, textureSize, textureSize);
   
@@ -312,7 +312,6 @@ function onKeyDown(e) {
             break;
 
     }
-
 }
 
 ///////////////////////
@@ -356,25 +355,25 @@ function drawTree(tree, x, y, z, high, rotation){
     const trunkMesh = new THREE.Mesh(trunkGeometry, trunkMaterial);
     tree.add(trunkMesh);
 
-    const branchGeometry = new THREE.CylinderGeometry(0.5, 0.5, high/2, 16);
+    const branchGeometry = new THREE.CylinderGeometry(0.5, 0.5, high/1.5, 16);
     const branchMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
     const branchMesh = new THREE.Mesh(branchGeometry, branchMaterial);
-    branchMesh.position.set(3.5, 2.5, 0.5);
-    branchMesh.rotateZ(-Math.PI / 2.5);
+    branchMesh.position.set(1.5, -1.5, 0);
+    branchMesh.rotateZ(-Math.PI / 4.5);
     tree.add(branchMesh);
 
     const foliageGeometry = new THREE.SphereGeometry(2, 50, 50);
     foliageGeometry.scale(2, 1, 2);
     const foliageMaterial = new THREE.MeshBasicMaterial({ color: 0x006400 });
     const foliageMesh = new THREE.Mesh(foliageGeometry, foliageMaterial);
-    foliageMesh.position.set(0, 6, 0);
+    foliageMesh.position.set(0, 3, 0);
     tree.add(foliageMesh);
 
     const foliageGeometry2 = new THREE.SphereGeometry(2, 50, 50);
     foliageGeometry2.scale(1.5, 0.5, 1.5);
     const foliageMaterial2 = new THREE.MeshBasicMaterial({ color: 0x006400 });
     const foliageMesh2 = new THREE.Mesh(foliageGeometry2, foliageMaterial2);
-    foliageMesh2.position.set(6, 4, 0);
+    foliageMesh2.position.set(3, 1, 0);
     tree.add(foliageMesh2);
 
     tree.rotateY(rotation);
@@ -386,10 +385,10 @@ function drawTree(tree, x, y, z, high, rotation){
 
 
 function drawMoon() {
-    const moonGeometry = new THREE.SphereGeometry(15, 50, 50);
+    const moonGeometry = new THREE.SphereGeometry(8, 10, 10);
     const moonMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
     const moon = new THREE.Mesh(moonGeometry, moonMaterial);
-    moon.position.set(0, 150, 150);
+    moon.position.set(0, 80, 80);
 
     const light = new THREE.AmbientLight( 0x404040 ); // soft white light
     light.position.set( moon.position.x, moon.position.y, moon.position.z );
@@ -404,31 +403,31 @@ function drawUFO(){
 
     UFO = new THREE.Object3D();
 
-    const bodyGeometry = new THREE.SphereGeometry(3, 50, 50);
+    const bodyGeometry = new THREE.SphereGeometry(1, 15, 15);
     const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xadd8e6 });
     const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
-    bodyMesh.scale.set(1, 0.5, 1);
+    bodyMesh.scale.set(1, 0.3, 1);
     UFO.add(bodyMesh);
 
-    const cockpitGeometry = new THREE.SphereGeometry(1.5, 64, 64);
-    cockpitGeometry.thetaLength = Math.PI / 2;
+    const cockpitGeometry = new THREE.SphereGeometry(0.5, 15, 15);
+    cockpitGeometry.thetaLength = Math.PI / 4;
     const cockpitMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff  });
     const cockpitMesh = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
-    cockpitMesh.position.set(0, 1, 0);
+    cockpitMesh.scale.set(1, 0.5, 1);
+    cockpitMesh.position.set(0, 0.3, 0);
     UFO.add(cockpitMesh);
     
-
     const numLights = 8; 
-    const lightGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+    const lightGeometry = new THREE.SphereGeometry(0.08, 5, 5);
     const lightMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     pointLights = [];
 
     for (let i = 0; i < numLights; i++) {
         const angle = (i / numLights) * Math.PI * 2;
-        const x = Math.cos(angle) * 2.5;
-        const z = Math.sin(angle) * 2.5;
+        const x = Math.cos(angle) * 0.8;
+        const z = Math.sin(angle) * 0.8;
         const lightMesh = new THREE.Mesh(lightGeometry, lightMaterial);
-        lightMesh.position.set(x, -0.75, z);
+        lightMesh.position.set(x, -0.2, z);
 
         const pointLight = new THREE.PointLight(0xffff00, 1, 5);
         pointLight.position.set(x, -3, z);
@@ -443,11 +442,11 @@ function drawUFO(){
         UFO.add(lightMesh);
     }
 
-    const bottomGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.5, 16);
+    const bottomGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
     const bottomMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     const bottomMesh = new THREE.Mesh(bottomGeometry, bottomMaterial);
-    bottomMesh.position.set(0, -1.5, 0);
-    bottomMesh.rotateX(Math.PI / 2);
+    bottomMesh.position.set(0, -0.3, 0);
+    //bottomMesh.rotateX(Math.PI / 2);
     UFO.add(bottomMesh);
 
     slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI, 0.5, 2 );
@@ -460,7 +459,7 @@ function drawUFO(){
     UFO.add(slight);
     //UFO.add(slight.target); // Add this line
     
-    UFO.position.set(0, 110, 0);
+    UFO.position.set(0, 30, 0);
     //slight.target.position.set(UFO.position.x, 0, UFO.position.z);
     
     UFO.scale.set(10, 10, 10);
@@ -479,7 +478,7 @@ function drawSkydome(){
     // Create the gradient background
     var gradient = context.createLinearGradient(0, 0, 0, textureSize);
     gradient.addColorStop(0, '#00008b'); // Dark blue
-    gradient.addColorStop(1, '#8a2be2'); // Dark violet
+    gradient.addColorStop(1, '#9400d3'); // Dark violet
     context.fillStyle = gradient;
     context.fillRect(0, 0, textureSize, textureSize);
 
@@ -497,7 +496,7 @@ function drawSkydome(){
     var texture = new THREE.Texture(canvas);
     texture.needsUpdate = true;
 
-    var radius = 10;
+    var radius = 5;
     var radialSegments = 32;
     var material = new THREE.MeshStandardMaterial({map:texture});
     var hemiSphereGeom = new THREE.SphereGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, 0, Math.PI / 2);
@@ -509,11 +508,10 @@ function drawSkydome(){
         
     hemiSphere.material.side = THREE.DoubleSide;
 
-    hemiSphere.scale.set(40,40,40);
+    hemiSphere.scale.set(30,30,30);
     scene.add(hemiSphere);
 
 }
-
 
 
 function switchPointLights(){

@@ -95,7 +95,7 @@ function createSkyTexture() {
   // Create the gradient background
   var gradient = context.createLinearGradient(0, 0, 0, textureSize);
   gradient.addColorStop(0, '#00008r'); // Dark blue
-  gradient.addColorStop(1, '#8a2be2'); // Dark violet
+  gradient.addColorStop(1, '#9400d3'); // Dark violet
   context.fillStyle = gradient;
   context.fillRect(0, 0, textureSize, textureSize);
 
