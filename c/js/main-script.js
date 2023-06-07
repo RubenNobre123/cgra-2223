@@ -295,21 +295,29 @@ function createSkyTexture() {
     return texture;
   }
 
+  function getRandomColor() {
+    var colors = ['#ffffff', '#ffff00', '#dda0dd', '#add8e6'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
   function createFieldTexture() {
     var canvas = document.createElement('canvas');
     canvas.width = textureSize;
     canvas.height = textureSize;
     var context = canvas.getContext('2d');
 
+    context.fillStyle = '#008000'; 
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
     var flowerRadius = 1;
     var numFlowers = 600;
     for (var i = 0; i < numFlowers; i++) {
-      var x = Math.random() * textureSize;
-      var y = Math.random() * textureSize;
-      context.fillStyle = '#ffffff';
-      context.beginPath();
-      context.arc(x, y, flowerRadius, 0, 2 * Math.PI);
-      context.fill();
+        var x = Math.random() * textureSize;
+        var y = Math.random() * textureSize;
+        context.fillStyle = getRandomColor();
+        context.beginPath();
+        context.arc(x, y, flowerRadius, 0, 2 * Math.PI);
+        context.fill();
     }
 
     var texture = new THREE.Texture(canvas);
