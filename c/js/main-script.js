@@ -6,6 +6,7 @@ var skyMaterial;
 var currentTextureType;
 var changeSky = false;
 var UFO;
+var activeCamera;
 
 var moveUFORight = false;
 var moveUFOLeft = false;
@@ -47,7 +48,7 @@ function createScene(){
     scene.position.set(0,0,0)
 
     var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~ist199226/heightmap.png");
-    const planeGeometry = new THREE.PlaneGeometry(300, 300, 100, 100);
+    const planeGeometry = new THREE.PlaneGeometry(400, 400, 100, 100);
     const planeMaterial = new THREE.MeshPhongMaterial(
     {
         color : 0x00FF00,
@@ -57,7 +58,7 @@ function createScene(){
     });
 
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.position.set(0, 5, 0); 
+    plane.position.set(0, 0, 0); 
     plane.scale.set(2, 2, 2);
     plane.rotation.x = Math.PI /2;
     scene.add(plane);
@@ -181,6 +182,7 @@ function init() {
 
     createScene();
     createCamera();
+    activeCamera = camera;
     orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
     render();
 
@@ -201,7 +203,7 @@ function animate() {
     renderer.setAnimationLoop( function () {
     
         delta = clock.getDelta();
-        UFO_SPEED = 10*delta
+        UFO_SPEED = 50*delta
     
         update();
     
@@ -349,12 +351,12 @@ function drawHouse(){
 function drawTree(tree, x, y, z, high, rotation){
     'use strict';
 
-    const trunkGeometry = new THREE.CylinderGeometry(1.5, 1.5, 10, 16);
+    const trunkGeometry = new THREE.CylinderGeometry(1.5, 1.5, high, 16);
     const trunkMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
     const trunkMesh = new THREE.Mesh(trunkGeometry, trunkMaterial);
     tree.add(trunkMesh);
 
-    const branchGeometry = new THREE.CylinderGeometry(0.5, 0.5, 8, 16);
+    const branchGeometry = new THREE.CylinderGeometry(0.5, 0.5, high/2, 16);
     const branchMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
     const branchMesh = new THREE.Mesh(branchGeometry, branchMaterial);
     branchMesh.position.set(3.5, 2.5, 0.5);
@@ -362,21 +364,21 @@ function drawTree(tree, x, y, z, high, rotation){
     tree.add(branchMesh);
 
     const foliageGeometry = new THREE.SphereGeometry(2, 50, 50);
-    foliageGeometry.scale(3, 1.5, 3);
+    foliageGeometry.scale(2, 1, 2);
     const foliageMaterial = new THREE.MeshBasicMaterial({ color: 0x006400 });
     const foliageMesh = new THREE.Mesh(foliageGeometry, foliageMaterial);
     foliageMesh.position.set(0, 6, 0);
     tree.add(foliageMesh);
 
     const foliageGeometry2 = new THREE.SphereGeometry(2, 50, 50);
-    foliageGeometry2.scale(2, 0.5, 2);
+    foliageGeometry2.scale(1.5, 0.5, 1.5);
     const foliageMaterial2 = new THREE.MeshBasicMaterial({ color: 0x006400 });
     const foliageMesh2 = new THREE.Mesh(foliageGeometry2, foliageMaterial2);
     foliageMesh2.position.set(6, 4, 0);
     tree.add(foliageMesh2);
 
     tree.rotateY(rotation);
-    tree.scale.set(2, high, 2);
+    //tree.scale.set(1, high, 1);
     tree.position.set(x, 2*y, z);
 
     scene.add(tree);
@@ -498,12 +500,12 @@ function drawSkydome(){
     var radius = 10;
     var radialSegments = 32;
     var material = new THREE.MeshStandardMaterial({map:texture});
-    var hemiSphereGeom = new THREE.SphereBufferGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, 0, Math.PI * 0.5);
+    var hemiSphereGeom = new THREE.SphereGeometry(radius, radialSegments, Math.round(radialSegments / 4), 0, Math.PI * 2, 0, Math.PI / 2);
     var hemiSphere = new THREE.Mesh(hemiSphereGeom, material);
-    var capGeom = new THREE.CircleBufferGeometry(radius, radialSegments);
-    capGeom.rotateX(Math.PI * 0.5);
-    var cap = new THREE.Mesh(capGeom, material);
-    hemiSphere.add(cap);
+    //var capGeom = new THREE.CircleBufferGeometry(radius, radialSegments);
+    //capGeom.rotateX(Math.PI * 0.5);
+    //var cap = new THREE.Mesh(capGeom, material);
+    //hemiSphere.add(cap);
         
     hemiSphere.material.side = THREE.DoubleSide;
 
