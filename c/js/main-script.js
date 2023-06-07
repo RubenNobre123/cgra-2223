@@ -444,7 +444,7 @@ function drawUFO(){
     bottomMesh.rotateX(Math.PI / 2);
     UFO.add(bottomMesh);
 
-    slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI/8, 0.5, 2 );
+    slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI, 0.5, 2 );
     slight.position.set( bottomMesh.position.x, bottomMesh.position.y, bottomMesh.position.z );
     slight.target.position.set(bottomMesh.position.x, 0, bottomMesh.position.z);
     
@@ -452,10 +452,10 @@ function drawUFO(){
     scene.add( spotLightHelper );
     
     UFO.add(slight);
-    UFO.add(slight.target); // Add this line
+    //UFO.add(slight.target); // Add this line
     
     UFO.position.set(0, 20, 0);
-    slight.target.position.set(UFO.position.x, 0, UFO.position.z);
+    //slight.target.position.set(UFO.position.x, 0, UFO.position.z);
     
     UFO.scale.set(1.5, 1.5, 1.5);
     scene.add(UFO);
