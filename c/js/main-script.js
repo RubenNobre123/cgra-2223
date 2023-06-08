@@ -1,3 +1,7 @@
+//////////////////////
+/* GLOBAL VARIABLES */
+//////////////////////
+
 var scene, renderer, bufferTexture;
 var camera;
 var textureSize = 512; // Size of the texture
@@ -8,6 +12,9 @@ var UFO;
 var activeCamera;
 var directionalLight;
 var hemiSphere;
+var tree_colors = [];
+var UFO_colors = [];
+var moon;
 
 var moveUFORight = false;
 var moveUFOLeft = false;
@@ -26,15 +33,12 @@ var delta;
 
 var UFO_SPEED
 
-const lambertMaterial = new THREE.MeshLambertMaterial();
-const phongMaterial = new THREE.MeshPhongMaterial();
-const toonMaterial = new THREE.MeshToonMaterial();
-const basicMaterial = new THREE.MeshBasicMaterial();
+var lambertMaterial = new THREE.MeshLambertMaterial();
+var phongMaterial = new THREE.MeshPhongMaterial();
+var toonMaterial = new THREE.MeshToonMaterial();
+var basicMaterial = new THREE.MeshBasicMaterial();
 
 
-//////////////////////
-/* GLOBAL VARIABLES */
-//////////////////////
 
 
 /////////////////////
@@ -121,11 +125,13 @@ function drawTree(tree, x, y, z, high, rotation){
 
     const trunkGeometry = new THREE.CylinderGeometry(1.5, 1.5, high, 16);
     const trunkMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+    tree_colors.push(0x8B4513);
     const trunkMesh = new THREE.Mesh(trunkGeometry, trunkMaterial);
     tree.add(trunkMesh);
 
     const branchGeometry = new THREE.CylinderGeometry(0.5, 0.5, high/1.5, 16);
     const branchMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+    tree_colors.push(0x8B4513);
     const branchMesh = new THREE.Mesh(branchGeometry, branchMaterial);
     branchMesh.position.set(1.5, -1.5, 0);
     branchMesh.rotateZ(-Math.PI / 4.5);
@@ -134,6 +140,7 @@ function drawTree(tree, x, y, z, high, rotation){
     const foliageGeometry = new THREE.SphereGeometry(2, 50, 50);
     foliageGeometry.scale(2, 1, 2);
     const foliageMaterial = new THREE.MeshBasicMaterial({ color: 0x006400 });
+    tree_colors.push(0x006400);
     const foliageMesh = new THREE.Mesh(foliageGeometry, foliageMaterial);
     foliageMesh.position.set(0, 3, 0);
     tree.add(foliageMesh);
@@ -141,6 +148,7 @@ function drawTree(tree, x, y, z, high, rotation){
     const foliageGeometry2 = new THREE.SphereGeometry(2, 50, 50);
     foliageGeometry2.scale(1.5, 0.5, 1.5);
     const foliageMaterial2 = new THREE.MeshBasicMaterial({ color: 0x006400 });
+    tree_colors.push(0x006400);
     const foliageMesh2 = new THREE.Mesh(foliageGeometry2, foliageMaterial2);
     foliageMesh2.position.set(3, 1, 0);
     tree.add(foliageMesh2);
@@ -155,8 +163,9 @@ function drawTree(tree, x, y, z, high, rotation){
 
 function drawMoon() {
     const moonGeometry = new THREE.SphereGeometry(8, 10, 10);
-    const moonMaterial = new THREE.MeshPhongMaterial({emissive: 0x505050});
-    const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+    const moonMaterial = new THREE.MeshPhongMaterial({ color: 0xffffa5, emissive: 0xffffa5, emissiveIntensity: 0.3 });
+    console.log(moonMaterial);
+    moon = new THREE.Mesh(moonGeometry, moonMaterial);
     moon.position.set(0, 80, 80);
 
     scene.add(moon);
@@ -169,14 +178,16 @@ function drawUFO(){
     UFO = new THREE.Object3D();
 
     const bodyGeometry = new THREE.SphereGeometry(1, 15, 15);
-    const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xadd8e6 });
+    const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xffa726 });
+    UFO_colors.push(0xffa726);
     const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
     bodyMesh.scale.set(1, 0.3, 1);
     UFO.add(bodyMesh);
 
     const cockpitGeometry = new THREE.SphereGeometry(0.5, 15, 15);
     cockpitGeometry.thetaLength = Math.PI / 4;
-    const cockpitMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff  });
+    const cockpitMaterial = new THREE.MeshBasicMaterial({ color: 0x87ceeb  });
+    UFO_colors.push(0x87ceeb);
     const cockpitMesh = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
     cockpitMesh.scale.set(1, 0.5, 1);
     cockpitMesh.position.set(0, 0.3, 0);
@@ -188,6 +199,7 @@ function drawUFO(){
     pointLights = [];
 
     for (let i = 0; i < numLights; i++) {
+        UFO_colors.push(0xffff00);
         const angle = (i / numLights) * Math.PI * 2;
         const x = Math.cos(angle) * 0.8;
         const z = Math.sin(angle) * 0.8;
@@ -205,6 +217,7 @@ function drawUFO(){
 
     const bottomGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
     const bottomMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    UFO_colors.push(0xffff00);
     const bottomMesh = new THREE.Mesh(bottomGeometry, bottomMaterial);
     bottomMesh.position.set(0, -0.3, 0);
     UFO.add(bottomMesh);
@@ -438,8 +451,6 @@ function init() {
     orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
     render();
 
-    console.log(scene);
-
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     window.addEventListener("resize", onResize);
@@ -589,16 +600,26 @@ function switchPointLights(){
 
 function changeMaterial(material){
     'use strict';
-
-
+    
     for (let i = 0; i < UFO.children.length; i++) {
-        UFO.children[i].material = material;
+        material.color.set(UFO_colors[i]);
+        UFO.children[i].material = material.clone();
     }
-
+    
     for (let i = 0; i < trees.length; i++) {
         for (let j = 0; j < trees[i].children.length; j++) {
-            trees[i].children[j].material = material;
+            material.color.set(tree_colors[j]);
+            trees[i].children[j].material = material.clone();
         }
     }
+    
+    var material1 = material.clone();
+    if(material != basicMaterial){ 
+        material1.emissive.set(0xffffa5);
+        material1.emissiveIntensity = 0.3;
+    }
+    material1.color.set(0xffffa5)
+    moon.material = material1
+    console.log(moon.material)
 }
 
