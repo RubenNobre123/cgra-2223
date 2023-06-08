@@ -79,7 +79,7 @@ function createLights() {
     directionalLight.position.set(35, 35, 35);
     scene.add(directionalLight);
 
-    const ambientLight = new THREE.AmbientLight(0x111111, 0.2);
+    const ambientLight = new THREE.AmbientLight(0x040404, 1);
     scene.add(ambientLight);
 }
 
@@ -112,59 +112,191 @@ function createPlane(){
     scene.add(plane);
 }
 
-
 function drawHouse(){
     'use strict';
 
-    const houseMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    var houseWalls  = new THREE.BufferGeometry();
+    var houseRoof = new THREE.BufferGeometry();
+    var houseWindows = new THREE.BufferGeometry();
 
-    // Base da casa
-    const baseGeometry = new THREE.BoxGeometry(10, 5, 7);
-    const base = new THREE.Mesh(baseGeometry, houseMaterial);
-    base.position.y = 2;
+    var houseWallsVertexPositions = new Float32Array([
+        //FACE 1
+        11.0, 1.5, 0.0,
+        0.0, 1.5, 0.0,
+        0.0, 0.0, 0.0,
 
-    // Telhado
-    const roofGeometry = new THREE.BoxGeometry(11, 3, 8);
-    const roofMaterial = new THREE.MeshBasicMaterial({ color: 0xffa500 });
-    const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-    roof.position.y = 6;
-    roof.position.z = -0.5;
+        11.0, 0.0, 0.0,
+        11.0, 1.5, 0.0,
+        0.0, 0.0, 0.0,
 
-    const doorWindowMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+        0.0, 6.0, 0.0,
+        0.0, 1.5, 0.0,
+        5.0, 6.0, 0.0,
+        
+        0.0, 1.5, 0.0,
+        5.0, 1.5, 0.0,
+        5.0, 6.0, 0.0,
 
-    // Porta
-    const doorGeometry = new THREE.BoxGeometry(2, 4, 1);
-    const door = new THREE.Mesh(doorGeometry, doorWindowMaterial);
-    door.position.y = 2;
-    door.position.z = -3.51;
+        7.0, 1.5, 0.0,
+        11.0, 6.0, 0.0,
+        7.0, 6.0, 0.0,
+        
+        7.0, 1.5, 0.0,
+        11.0, 1.5, 0.0,
+        11.0, 6.0, 0.0,
 
-    // Janelas
-    const windowGeometry = new THREE.BoxGeometry(1.5, 1.5, 1);
+        13.0, 1.5, 0.0,
+        15.0, 6.0, 0.0,
+        13.0, 6.0, 0.0,
 
-    const window1 = new THREE.Mesh(windowGeometry, doorWindowMaterial);
-    window1.position.set(-3, 2, -3.51);
+        13.0, 1.5, 0.0,
+        15.0, 1.5, 0.0,
+        15.0, 6.0, 0.0,
 
-    const window2 = window1.clone();
-    window2.position.x = 3;
+        13.0, 0.0, 0.0,
+        22.0, 1.5, 0.0,
+        13.0, 1.5, 0.0,
 
-    const window3 = window1.clone();
-    window3.position.set(-3, 2, -0.49);
-    window3.rotation.y = Math.PI;
+        13.0, 0.0, 0.0,
+        22.0, 0.0, 0.0,
+        22.0, 1.5, 0.0,
 
-    const window4 = window3.clone();
-    window4.position.x = 3;
+        17.0, 1.5, 0.0,
+        22.0, 6.0, 0.0,
+        17.0, 6.0, 0.0,
 
-    const trimMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff }); // ou 0xffff00 para amarelo
+        17.0, 1.5, 0.0,
+        22.0, 1.5, 0.0,
+        22.0, 6.0, 0.0,
 
-    const trimGeometry = new THREE.BoxGeometry(11, 0.5, 0.5);
-    const trim1 = new THREE.Mesh(trimGeometry, trimMaterial);
-    trim1.position.set(0, -2.25, -3.51);
+        0.0, 6.0, 0.0,
+        22.0, 6.0, 0.0,
+        22.0, 7.0, 0.0,
+        
+        0.0, 7.0, 0.0,
+        0.0, 6.0, 0.0,
+        22.0, 7.0, 0.0,
 
-    const trim2 = trim1.clone();
-    trim2.position.z = -0.49;
-    trim2.rotation.y = Math.PI;
+        //FACE 2 - Triangle 1
+        22.0, 0.0, 10.0,
+        22.0, 7.0, 0.0,
+        22.0, 0.0, 0.0,
 
-    scene.add(base, roof, door, window1, window2, window3, window4, trim1, trim2);
+        //FACE 2 - Triangle 2
+        22.0, 0.0, 10.0,
+        22.0, 7.0, 10.0,
+        22.0, 7.0, 0.0,
+
+        //FACE 3 - Triangle 1
+        22.0, 0.0, 10.0,
+        0.0, 0.0, 10.0,
+        22.0, 7.0, 10.0,
+        
+        //FACE 3 - Triangle 2
+        0.0, 0.0, 10.0,
+        0.0, 7.0, 10.0,
+        22.0, 7.0, 10.0,
+
+        //FACE 4 - Triangle 1
+        0.0, 0.0, 10.0,
+        0.0, 7.0, 0.0,
+        0.0, 7.0, 10.0,
+
+        //FACE 4 - Triangle 2
+        0.0, 0.0, 10.0,
+        0.0, 0.0, 0.0,
+        0.0, 7.0, 0.0,
+
+        //FACE 5
+        22.0, 7.0, 0.0,
+        22.0, 7.0, 10.0,
+        22.0, 10.0, 5.0,
+
+        //FACE 6
+        0.0, 7.0, 0.0,
+        0.0, 10.0, 5.0,
+        0.0, 7.0, 10.0
+    ]);
+
+    var houseRoofVertexPositions = new Float32Array([
+        //ROOF 1 - Triangle 1
+        0.0, 7.0, 0.0,
+        22.0, 7.0, 0.0,
+        0.0, 10.0, 5.0,
+
+        //ROOF 1 - Triangle 2
+        22.0, 7.0, 0.0,
+        22.0, 10.0, 5.0,
+        0.0, 10.0, 5.0,
+
+        //ROOF 2 - Triangle 1
+        0.0, 7.0, 10.0,
+        0.0, 10.0, 5.0,
+        22.0, 7.0, 10.0,
+
+        //ROOF 2 - Triangle 2
+        22.0, 10.0, 5.0,
+        22.0, 7.0, 10.0,
+        0.0, 10.0, 5.0
+    ]);
+
+    var houseWindowsVertexPositions = new Float32Array([
+        //Window 1 - Triangle 1
+        5.0, 1.5, 0.0,
+        7.0, 1.5, 0.0,
+        5.0, 6.0, 0.0,
+        
+        //Window 1 - Triangle 2
+        7.0, 6.0, 0.0,
+        5.0, 6.0, 0.0,
+        7.0, 1.5, 0.0,
+
+        //Window 2 - Triangle 1
+        15.0, 1.5, 0.0,
+        17.0, 1.5, 0.0,
+        15.0, 6.0, 0.0,
+
+        //Window 2 - Triangle 2
+        17.0, 6.0, 0.0,
+        15.0, 6.0, 0.0,
+        17.0, 1.5, 0.0,
+
+        //Door - Triangle 1
+        11.0, 0.0, 0.0,
+        13.0, 0.0, 0.0,
+        11.0, 6.0, 0.0,
+        
+        //Door - Triangle 2
+        13.0, 6.0, 0.0,
+        11.0, 6.0, 0.0,
+        13.0, 0.0, 0.0
+    ]);
+    
+    const houseWallsVertices = houseWallsVertexPositions;
+    const houseRoofVertices = houseRoofVertexPositions;
+    const houseWindowsVertices = houseWindowsVertexPositions;
+
+    // itemSize = 3 because there are 3 values (components) per vertex
+    houseWalls.setAttribute( 'position', new THREE.BufferAttribute(houseWallsVertices, 3));
+    houseRoof.setAttribute('position', new THREE.BufferAttribute(houseRoofVertices, 3));
+    houseWindows.setAttribute('position', new THREE.BufferAttribute(houseWindowsVertices, 3));
+
+    houseWalls.computeVertexNormals();
+    houseRoof.computeVertexNormals();
+    houseWindows.computeVertexNormals();
+
+    var houseWallsMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, side: THREE.DoubleSide});
+    var houseWallsMesh = new THREE.Mesh(houseWalls, houseWallsMaterial);
+
+    var houseRoofMaterial = new THREE.MeshPhongMaterial({ color: 0xFFA500, side: THREE.DoubleSide});
+    var houseRoofMesh = new THREE.Mesh(houseRoof, houseRoofMaterial);
+
+    var houseWindowsMaterial = new THREE.MeshPhongMaterial({ color: 0x0000FF, side: THREE.DoubleSide});
+    var houseWindowsMesh = new THREE.Mesh(houseWindows, houseWindowsMaterial);
+
+    scene.add(houseWindowsMesh);
+    scene.add(houseRoofMesh);
+    scene.add(houseWallsMesh);
 }
 
 function drawTree(tree, x, y, z, high, rotation){
