@@ -89,14 +89,14 @@ function createLights() {
 ////////////////////////
 
 function createPlane(){
-var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~ist199226/heightmap.png");
+    var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~ist199321/heightmap.png");
     const planeGeometry = new THREE.PlaneGeometry(100, 100, 100, 100);
 
     texture = createFieldTexture();
 
     const planeMaterial = new THREE.MeshPhongMaterial(
     {
-        color : 0x00FF00,
+        color : 0XFFFFFF,
         side: THREE.DoubleSide,
         displacementMap : heightMap,
         displacementScale : 10,
@@ -104,7 +104,7 @@ var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~
     });    
 
     plane = new THREE.Mesh(planeGeometry, planeMaterial);
-    plane.position.set(0, 20, 0); 
+    plane.position.set(0, 30, 0); 
     plane.scale.set(3, 3, 3);
     plane.rotation.x = Math.PI /2;
     plane.material.side = THREE.DoubleSide;
@@ -116,8 +116,55 @@ var heightMap = new THREE.TextureLoader().load("https://web.tecnico.ulisboa.pt/~
 function drawHouse(){
     'use strict';
 
-    var house = new THREE.Object3D();
-    scene.add(house);
+    const houseMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+    // Base da casa
+    const baseGeometry = new THREE.BoxGeometry(10, 5, 7);
+    const base = new THREE.Mesh(baseGeometry, houseMaterial);
+    base.position.y = 2;
+
+    // Telhado
+    const roofGeometry = new THREE.BoxGeometry(11, 3, 8);
+    const roofMaterial = new THREE.MeshBasicMaterial({ color: 0xffa500 });
+    const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+    roof.position.y = 6;
+    roof.position.z = -0.5;
+
+    const doorWindowMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+
+    // Porta
+    const doorGeometry = new THREE.BoxGeometry(2, 4, 1);
+    const door = new THREE.Mesh(doorGeometry, doorWindowMaterial);
+    door.position.y = 2;
+    door.position.z = -3.51;
+
+    // Janelas
+    const windowGeometry = new THREE.BoxGeometry(1.5, 1.5, 1);
+
+    const window1 = new THREE.Mesh(windowGeometry, doorWindowMaterial);
+    window1.position.set(-3, 2, -3.51);
+
+    const window2 = window1.clone();
+    window2.position.x = 3;
+
+    const window3 = window1.clone();
+    window3.position.set(-3, 2, -0.49);
+    window3.rotation.y = Math.PI;
+
+    const window4 = window3.clone();
+    window4.position.x = 3;
+
+    const trimMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff }); // ou 0xffff00 para amarelo
+
+    const trimGeometry = new THREE.BoxGeometry(11, 0.5, 0.5);
+    const trim1 = new THREE.Mesh(trimGeometry, trimMaterial);
+    trim1.position.set(0, -2.25, -3.51);
+
+    const trim2 = trim1.clone();
+    trim2.position.z = -0.49;
+    trim2.rotation.y = Math.PI;
+
+    scene.add(base, roof, door, window1, window2, window3, window4, trim1, trim2);
 }
 
 function drawTree(tree, x, y, z, high, rotation){
@@ -222,17 +269,15 @@ function drawUFO(){
     bottomMesh.position.set(0, -0.3, 0);
     UFO.add(bottomMesh);
 
-    slight = new THREE.SpotLight ( 0xffff00, 1, -10, Math.PI/8, 0.5, 2 );
-    slight.position.set( bottomMesh.position.x, bottomMesh.position.y, bottomMesh.position.z );
-    scene.add( slight.target );
+    slight = new THREE.SpotLight ( 0xffff00, 1, 0, Math.PI/8, 0.5, 2 );
+    slight.target.position.set(UFO.position.x, UFO.position.y - 10, UFO.position.z);
     UFO.add( slight );
     
-    //const spotLightHelper = new THREE.SpotLightHelper( slight );
-    //scene.add( spotLightHelper );
-        
     UFO.position.set(0, 30, 0);
     
+    slight.position.set( UFO.position.x, 0, UFO.position.z );
     UFO.scale.set(10, 10, 10);
+    scene.add(slight.target);
     scene.add(UFO);
 }
 
@@ -363,19 +408,15 @@ function update(){
     
     if(moveUFORight){
         UFO.position.x += UFO_SPEED;
-        //slight.position.x += UFO_SPEED;
     }
     if(moveUFOLeft){
         UFO.position.x -= UFO_SPEED;
-        //slight.position.x -= UFO_SPEED;
     }
     if(moveUFOUp){
         UFO.position.z -= UFO_SPEED;
-        //slight.position.z -= UFO_SPEED;
     }
     if(moveUFODown){
         UFO.position.z += UFO_SPEED;
-        //slight.position.z += UFO_SPEED;
     }
     if(changeSky) {
         var skyTexture = createSkyTexture();
@@ -387,6 +428,7 @@ function update(){
         plane.material.map = fieldTexture;
         plane.material.needsUpdate = true;
     }
+    slight.target.position.set(UFO.position.x, UFO.position.y - 10, UFO.position.z);
 }
 
 /////////////
@@ -449,6 +491,7 @@ function init() {
     drawMoon();
 
     orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+    orbitControls.maxDistance = 140;
     render();
 
     window.addEventListener("keydown", onKeyDown);
@@ -473,7 +516,7 @@ function animate() {
         update();
     
         renderer.render( scene, activeCamera);
-        UFO.rotation.y += 0.05;    
+        UFO.rotation.y += 0.05;
     } );
 }
 
