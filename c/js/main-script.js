@@ -75,7 +75,7 @@ function createCamera() {
 function createLights() {
 
     directionalLight = new THREE.DirectionalLight(0xffaa33, 0.5);
-    directionalLight.position.set(35, 35, 35);
+    directionalLight.position.set(-35, 35, -35);
     scene.add(directionalLight);
 
     const ambientLight = new THREE.AmbientLight(0x040404, 1);
@@ -332,7 +332,6 @@ function drawTree(tree, x, y, z, high, rotation){
     tree.add(foliageMesh2);
 
     tree.rotateY(rotation);
-    //tree.scale.set(1, high, 1);
     tree.position.set(x, 2*y, z);
 
     scene.add(tree);
