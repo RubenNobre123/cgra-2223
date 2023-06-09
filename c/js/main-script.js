@@ -15,6 +15,9 @@ var hemiSphere;
 var tree_colors = [];
 var UFO_colors = [];
 var moon;
+var illumination = true;
+var previousMaterial;
+var currentMaterial;
 
 var moveUFORight = false;
 var moveUFOLeft = false;
@@ -78,7 +81,7 @@ function createLights() {
     directionalLight.position.set(-35, 35, -35);
     scene.add(directionalLight);
 
-    const ambientLight = new THREE.AmbientLight(0x040404, 1);
+    const ambientLight = new THREE.AmbientLight(0x444444, 1);
     scene.add(ambientLight);
 }
 
@@ -384,7 +387,7 @@ function drawUFO(){
         lightMesh.position.set(x, -0.2, z);
 
         const pointLight = new THREE.PointLight(0xffff00, 1, 25);
-        pointLight.position.set(x, 0, z);
+        pointLight.position.set(x, -2, z);
         scene.add(pointLight);
         pointLights.push(pointLight);
 
@@ -678,15 +681,6 @@ function onKeyDown(e) {
         case 50: // 2
             changeSky = true;
             break;
-        case 51: // 3
-            activeCamera = topCamera;
-            break;
-        case 52: // 4
-            activeCamera = isometricOrthogonalCamera;
-            break;
-        case 53: // 5
-            activeCamera = perspectiveCamera;
-            break;
         case 37: // left arrow
             moveUFOLeft = true;
             break;
@@ -709,18 +703,25 @@ function onKeyDown(e) {
             break;
         case 81:
         case 113:
+            illumination = true;
+            currentMaterial = lambertMaterial;
             changeMaterial(lambertMaterial);
             break;
         case 87:
         case 119:
+            illumination = true;
+            currentMaterial = phongMaterial;
             changeMaterial(phongMaterial);
             break;
         case 69:
         case 101:
+            illumination = true;
+            currentMaterial = toonMaterial;
             changeMaterial(toonMaterial);
             break;
         case 82:
         case 114:
+            illumination = false;
             changeMaterial(basicMaterial);
             break;
         case 68: // D
@@ -773,7 +774,14 @@ function switchPointLights(){
 
 function changeMaterial(material){
     'use strict';
-    
+
+    if(!illumination && currentMaterial == basicMaterial){
+        material = previousMaterial;
+    }
+    else if (!illumination) {
+        material = basicMaterial
+    }
+
     for (let i = 0; i < UFO.children.length; i++) {
         material.color.set(UFO_colors[i]);
         UFO.children[i].material = material.clone();
@@ -793,6 +801,7 @@ function changeMaterial(material){
     }
     material1.color.set(0xffffa5)
     moon.material = material1
-    console.log(moon.material)
+    previousMaterial = currentMaterial;
+    currentMaterial = material;
 }
 
